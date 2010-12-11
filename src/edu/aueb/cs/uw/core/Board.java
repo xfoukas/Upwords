@@ -5,6 +5,8 @@ import java.util.LinkedList;
 public class Board {
 	
 	public static final int BOARD_SIZE=10;
+	private static final int COL_ORIENT=1;
+	private static final int ROW_ORIENT=0;
 	
 	private TileStack [][] board;
 	private LinkedList<AddedTile> tilesAdded;
@@ -48,6 +50,12 @@ public class Board {
 		isFirstWord=true;
 	}
 	
+	/**
+	 * If the placement of tiles is right
+	 * calculate the score of the player
+	 * 
+	 * @return The score of the current player
+	 */
 	public int commit(){
 		int score;
 		if(!isValidPlacement())
@@ -59,14 +67,100 @@ public class Board {
 	
 	public int getScore(){
 		int score=0;
+		int orientation;
+		int size=tilesAdded.size();
+		AddedTile t;
+		if(size==1){
+			score+=getScoreHorizontal(tilesAdded.getFirst().getX(),
+					tilesAdded.getFirst().getY());
+			score+=getScoreVertical(tilesAdded.getFirst().getX(),
+					tilesAdded.getFirst().getY());
+		}
+		t=tilesAdded.getFirst();
+		orientation=findOrientation();
+		switch (orientation) {
+		case COL_ORIENT:
+			score+=getScoreVertical(t.getX(), t.getY());
+			for(AddedTile tile : tilesAdded)
+				score+=getScoreHorizontal(tile.getX(), tile.getY());
+			break;
+		case ROW_ORIENT:
+			score+=getScoreHorizontal(t.getX(), t.getY());
+			for(AddedTile tile : tilesAdded)
+				score+=getScoreVertical(tile.getX(), tile.getY());
+			break;
+		default:
+			break;
+		}
 		if(allLettersUsed())
 			score+=10;
-		for(AddedTile t : tilesAdded){
-			/*BONUS LETTER*/
-			score+=2;
+		for(AddedTile tile : tilesAdded){
+			if(TilePool.BONUS_LETTERS.indexOf(tile.getTile().getLetter())!=-1)
+					score+=2;
 		}
-		
-		/*TODO*/
+		return score;
+	}
+	
+	private int findOrientation(){
+		AddedTile t1,t2;
+		if(tilesAdded.size()<2)
+			return -1;
+		else {
+			t1=tilesAdded.get(0);
+			t2=tilesAdded.get(1);
+			if(t1.getX()==t2.getX())
+				return ROW_ORIENT;
+			else if(t1.getY()==t2.getY())
+				return COL_ORIENT;
+			else return -1;
+		}
+	}
+	
+	private int getScoreHorizontal(int x,int y){
+		int score=0;
+		int firstOfRow=y;
+		boolean isFirstLevel=true;
+		while(firstOfRow-1>=0){
+			if(!board[x][firstOfRow-1].isEmpty())
+				firstOfRow--;
+			else break;
+		}
+		int i=firstOfRow;
+		do {
+			if(!board[x][i].hasSingleTile()){
+				isFirstLevel=false;
+				score+=board[x][i].getSize();
+			}
+			else
+				score++;
+			i++;
+		} while(board[x][i].isEmpty());
+		if(isFirstLevel)
+			score*=2;
+		return score;
+	}
+	
+	private int getScoreVertical(int x, int y){
+		int score=0;
+		int firstOfCol=x;
+		boolean isFirstLevel=true;
+		while(firstOfCol-1>=0){
+			if(!board[firstOfCol-1][y].isEmpty())
+				firstOfCol--;
+			else break;
+		}
+		int i=firstOfCol;
+		do {
+			if(!board[i][y].hasSingleTile()){
+				isFirstLevel=false;
+				score+=board[i][y].getSize();
+			}
+			else
+				score++;
+			i++;
+		} while(board[i][y].isEmpty());
+		if(isFirstLevel)
+			score*=2;
 		return score;
 	}
 	
@@ -77,14 +171,11 @@ public class Board {
 	
 	public boolean isValidPlacement(){
 		int size;
+		boolean hasCentralCell=false;
 		size=tilesAdded.size();
 		if(size==0)
 			return false;
 		if(isFirstWord){
-			/*TODO must be in a row
-			 * What I have done is wrong
-			 */
-			boolean hasCentralCell=false;
 			for(AddedTile t : tilesAdded){
 				if(isCentralCell(t.getX(), t.getY()))
 					hasCentralCell=true;
@@ -101,9 +192,50 @@ public class Board {
 	}
 	
 	public boolean isValidTilePlacement(AddedTile tile){
-		return hasNeighbours(tile.getX(), tile.getY());
+		int numTiles=tilesAdded.size();
+		int tilesLeftToCheck=numTiles-1;
+		boolean continuousTiles=true;
+		int tilesAddedFound=0;
+		/*Check row*/
+		for(int i=0;i<BOARD_SIZE;i++){
+			if(i==tile.getY()) continue; //Do not look at this tile
+			//Has a tile?
+			if(board[tile.getX()][i].isEmpty()){
+				continuousTiles=false;
+				continue;
+			}
+			//if added on this round
+			if(board[tile.getX()][i].getTop().getAge()==turn) {
+				if(!continuousTiles)
+					tilesAddedFound=0;
+				tilesAddedFound++;
+			}
+			continuousTiles=true;
+		}
+		if(tilesAddedFound==tilesLeftToCheck)
+			return true;
+		tilesAddedFound=0;
+		continuousTiles=true;
+		//Do the same for column
+		for(int i=0;i<BOARD_SIZE;i++){
+			if(i==tile.getX()) continue; //Do not look at this tile
+			//Has a tile?
+			if(board[i][tile.getY()].isEmpty()){
+				continuousTiles=false;
+				continue;
+			}
+			//if added on this round
+			if(board[i][tile.getY()].getTop().getAge()==turn) {
+				if(!continuousTiles)
+					tilesAddedFound=0;
+				tilesAddedFound++;
+			}
+			continuousTiles=true;
+		}
+		if(tilesAddedFound==tilesLeftToCheck)
+			return true;
+		return false;
 	}
-	
 
 	public boolean hasNeighbours(int x,int y){
 		return (hasTile(x-1, y)||hasTile(x+1, y)
@@ -193,5 +325,9 @@ public class Board {
 
 	public int getTurn() {
 		return turn;
+	}
+	
+	public boolean haveMadeChanges(){
+		return (tilesAdded.size()>0)?true:false;
 	}
 }

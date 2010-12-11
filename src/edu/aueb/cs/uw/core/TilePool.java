@@ -6,6 +6,8 @@ import java.util.Random;
 
 public class TilePool {
 	
+	public final static String BONUS_LETTERS="ΘΞΦΧΨ";
+	
 	private Map<Character,Integer> tilesMap;
 	private int numOfTiles;
 	
@@ -32,6 +34,11 @@ public class TilePool {
 			else p -= entry.getValue();
 		}
 		return null;
+	}
+	
+	public Tile switchTile(Tile tile){
+		tilesMap.put(tile.getLetter(), (tilesMap.get(tile.getLetter())+1));
+		return getTile();
 	}
 
 	public boolean hasMoreTiles(){

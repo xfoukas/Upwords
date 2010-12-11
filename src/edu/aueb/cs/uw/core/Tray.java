@@ -8,15 +8,17 @@ public class Tray {
 	private TilePool pool;
 	private int playerID;
 	private int numOfTiles;
+	private int numUnusedTiles;
 	
 	public Tray(int playerID,TilePool pool){
 		tray=new Tile[TRAY_SIZE];
 		this.setPlayerID(playerID);
 		this.setNumOfTiles(0);
+		this.setNumUnusedTiles(0);
 		this.setPool(pool);
 	}
 
-	public int beginRound(){
+	public int fillTray(){
 		Tile t;
 		int neededTiles=TRAY_SIZE-numOfTiles;
 		int addedTiles=0;
@@ -28,6 +30,7 @@ public class Tray {
 				addedTiles++;
 			} else break;
 		}
+		setNumUnusedTiles(getNumUnusedTiles() + addedTiles);
 		return addedTiles;
 	}
 	
@@ -35,6 +38,7 @@ public class Tray {
 		if((tray[i]==null)||(i>=TRAY_SIZE)
 				||(i<0))
 			return null;
+		setNumUnusedTiles(getNumUnusedTiles() - 1);
 		return tray[i];
 	}
 	
@@ -72,5 +76,20 @@ public class Tray {
 
 	public TilePool getPool() {
 		return pool;
+	}
+	
+	public boolean switchTile(int tilePos){
+		if(!pool.hasMoreTiles())
+			return false;
+		tray[tilePos]=pool.switchTile(tray[tilePos]);
+		return true;
+	}
+	
+	public int getNumUnusedTiles(){
+		return this.numUnusedTiles;
+	}
+
+	public void setNumUnusedTiles(int numUnusedTiles) {
+		this.numUnusedTiles = numUnusedTiles;
 	}
 }

@@ -7,12 +7,14 @@ public class Player {
 	private Tray tray;
 	private TilePool pool;
 	private int color;
+	private int score;
 	
 	public Player(String nickname,int color, TilePool pool){
 		this.setColor(color);
 		this.setNickname(nickname);
 		this.setPool(pool);
 		this.tray=new Tray(playerID, pool);
+		this.setScore(0);
 	}
 
 	public void setPlayerID(int playerID) {
@@ -33,6 +35,7 @@ public class Player {
 
 	public void setPool(TilePool pool) {
 		this.pool = pool;
+		this.tray=new Tray(playerID, pool);
 	}
 
 	public TilePool getPool() {
@@ -53,6 +56,14 @@ public class Player {
 
 	public int getColor() {
 		return color;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
+	public int getScore() {
+		return score;
 	}
 	
 }

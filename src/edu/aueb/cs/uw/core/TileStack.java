@@ -64,6 +64,9 @@ public class TileStack {
 		return tileStack.isEmpty();
 	}
 	
+	public int getSize(){
+		return tileStack.size();
+	}
 	
 	
 }

@@ -104,4 +104,10 @@ public class GameEngine {
 		return gaveUpTurn;
 	}
 
+	public Player getPlayer(int playerID){
+		if((playerID+1>players.length)||
+				(playerID<0))
+			return null;
+		return players[playerID];
+	}
 }

@@ -330,4 +330,5 @@ public class Board {
 	public boolean haveMadeChanges(){
 		return (tilesAdded.size()>0)?true:false;
 	}
+	
 }

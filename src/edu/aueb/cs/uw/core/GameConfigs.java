@@ -4,6 +4,10 @@ public class GameConfigs {
 
 	static final int D_NUM_PLAYERS=2;
 	
+	public enum D_COLORS {
+		BLACK,BLUE,YELLOW,RED
+	}
+	
 	private int numPlayers;
 	
 	

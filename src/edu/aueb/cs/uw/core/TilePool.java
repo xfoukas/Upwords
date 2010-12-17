@@ -12,8 +12,8 @@ public class TilePool {
 	private int numOfTiles;
 	
 	public  TilePool(){
-		this.setNumOfTiles(calculateNumOfTiles());
 		this.initializeMap();
+		this.setNumOfTiles(calculateNumOfTiles());
 	}
 	
 	public int calculateNumOfTiles(){

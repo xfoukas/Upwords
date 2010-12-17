@@ -1,0 +1,232 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  Internal Error (classFileParser.cpp:3375), pid=28621, tid=3063978864
+#  Error: ShouldNotReachHere()
+#
+# JRE version: 6.0_23-b05
+# Java VM: Java HotSpot(TM) Server VM (19.0-b09 mixed mode linux-x86 )
+# If you would like to submit a bug report, please visit:
+#   http://java.sun.com/webapps/bugreport/crash.jsp
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x09cb0400):  JavaThread "Unknown thread" [_thread_in_vm, id=28626, stack(0xb69b9000,0xb6a0a000)]
+
+Stack: [0xb69b9000,0xb6a0a000],  sp=0xb6a08800,  free space=318k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [libjvm.so+0x6e0e00]
+V  [libjvm.so+0x2d647f]
+V  [libjvm.so+0x26ff9a]
+V  [libjvm.so+0x275e21]
+V  [libjvm.so+0x67386f]
+V  [libjvm.so+0x671af5]
+V  [libjvm.so+0x6709b6]
+V  [libjvm.so+0x670660]
+V  [libjvm.so+0x674fca]
+V  [libjvm.so+0x67505c]
+V  [libjvm.so+0x675120]
+V  [libjvm.so+0x674f09]
+V  [libjvm.so+0x6ba64a]
+V  [libjvm.so+0x6bbcdf]
+V  [libjvm.so+0x3939d8]
+V  [libjvm.so+0x6a3c6d]
+V  [libjvm.so+0x3eb926]
+C  [java+0x405c]
+C  [java+0x2942]  JavaMain+0x72
+C  [libpthread.so.0+0x5cf3]
+
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+
+Other Threads:
+
+=>0x09cb0400 (exited) JavaThread "Unknown thread" [_thread_in_vm, id=28626, stack(0xb69b9000,0xb6a0a000)]
+
+VM state:not at safepoint (not fully initialized)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Dynamic libraries:
+08047000-08052000 r-xp 00000000 08:33 2193673    /opt/sun-jdk-1.6.0.23/bin/java
+08052000-08053000 rwxp 0000a000 08:33 2193673    /opt/sun-jdk-1.6.0.23/bin/java
+09caa000-09d12000 rwxp 00000000 00:00 0          [heap]
+7bb3d000-7bb9c000 r-xs 00492000 08:33 2126290    /opt/android-sdk-update-manager/platforms/android-7/android.jar
+7bb9c000-7bb9d000 ---p 00000000 00:00 0 
+7bb9d000-7bc1d000 rwxp 00000000 00:00 0 
+7bc1d000-7bc1e000 ---p 00000000 00:00 0 
+7bc1e000-7bc9e000 rwxp 00000000 00:00 0 
+7bc9e000-7bc9f000 ---p 00000000 00:00 0 
+7bc9f000-7bd1f000 rwxp 00000000 00:00 0 
+7bd1f000-7bd20000 ---p 00000000 00:00 0 
+7bd20000-7bda8000 rwxp 00000000 00:00 0 
+7bda8000-7bdc0000 rwxp 00000000 00:00 0 
+7bdc0000-7bdd2000 rwxp 00000000 00:00 0 
+7bdd2000-7bed3000 rwxp 00000000 00:00 0 
+7bed3000-7bedb000 rwxp 00000000 00:00 0 
+7bedb000-7bef3000 rwxp 00000000 00:00 0 
+7bef3000-7bf05000 rwxp 00000000 00:00 0 
+7bf05000-7c005000 rwxp 00000000 00:00 0 
+7c005000-7c00f000 rwxp 00000000 00:00 0 
+7c00f000-7c08f000 rwxp 00000000 00:00 0 
+7c08f000-7d090000 rwxp 00000000 00:00 0 
+7d090000-80090000 rwxp 00000000 00:00 0 
+80090000-822e0000 rwxp 00000000 00:00 0 
+822e0000-a25f0000 rwxp 00000000 00:00 0 
+a25f0000-a3710000 rwxp 00000000 00:00 0 
+a3710000-b3890000 rwxp 00000000 00:00 0 
+b3897000-b38a0000 rwxp 00000000 00:00 0 
+b38a0000-b3957000 rwxp 00000000 00:00 0 
+b3957000-b3b97000 rwxp 00000000 00:00 0 
+b3b97000-b6957000 rwxp 00000000 00:00 0 
+b6957000-b696a000 r-xp 00000000 08:33 267021     /lib/libnsl-2.12.1.so
+b696a000-b696b000 r-xp 00012000 08:33 267021     /lib/libnsl-2.12.1.so
+b696b000-b696c000 rwxp 00013000 08:33 267021     /lib/libnsl-2.12.1.so
+b696c000-b696e000 rwxp 00000000 00:00 0 
+b697f000-b698e000 r-xp 00000000 08:33 1251871    /opt/sun-jdk-1.6.0.23/jre/lib/i386/libzip.so
+b698e000-b6990000 rwxp 0000e000 08:33 1251871    /opt/sun-jdk-1.6.0.23/jre/lib/i386/libzip.so
+b6990000-b699a000 r-xp 00000000 08:33 267013     /lib/libnss_files-2.12.1.so
+b699a000-b699b000 r-xp 00009000 08:33 267013     /lib/libnss_files-2.12.1.so
+b699b000-b699c000 rwxp 0000a000 08:33 267013     /lib/libnss_files-2.12.1.so
+b699c000-b69a5000 r-xp 00000000 08:33 267025     /lib/libnss_nis-2.12.1.so
+b69a5000-b69a6000 r-xp 00008000 08:33 267025     /lib/libnss_nis-2.12.1.so
+b69a6000-b69a7000 rwxp 00009000 08:33 267025     /lib/libnss_nis-2.12.1.so
+b69a7000-b69ad000 r-xp 00000000 08:33 1251912    /opt/sun-jdk-1.6.0.23/jre/lib/i386/native_threads/libhpi.so
+b69ad000-b69ae000 rwxp 00006000 08:33 1251912    /opt/sun-jdk-1.6.0.23/jre/lib/i386/native_threads/libhpi.so
+b69ae000-b69af000 rwxp 00000000 00:00 0 
+b69af000-b69b0000 r-xp 00000000 00:00 0 
+b69b0000-b69b7000 r-xp 00000000 08:33 266943     /lib/librt-2.12.1.so
+b69b7000-b69b8000 r-xp 00006000 08:33 266943     /lib/librt-2.12.1.so
+b69b8000-b69b9000 rwxp 00007000 08:33 266943     /lib/librt-2.12.1.so
+b69b9000-b69bc000 ---p 00000000 00:00 0 
+b69bc000-b6a0a000 rwxp 00000000 00:00 0 
+b6a0a000-b6a2e000 r-xp 00000000 08:33 267061     /lib/libm-2.12.1.so
+b6a2e000-b6a2f000 r-xp 00023000 08:33 267061     /lib/libm-2.12.1.so
+b6a2f000-b6a30000 rwxp 00024000 08:33 267061     /lib/libm-2.12.1.so
+b6a30000-b7195000 r-xp 00000000 08:33 1251917    /opt/sun-jdk-1.6.0.23/jre/lib/i386/server/libjvm.so
+b7195000-b71e8000 rwxp 00765000 08:33 1251917    /opt/sun-jdk-1.6.0.23/jre/lib/i386/server/libjvm.so
+b71e8000-b7607000 rwxp 00000000 00:00 0 
+b7607000-b775b000 r-xp 00000000 08:33 267042     /lib/libc-2.12.1.so
+b775b000-b775d000 r-xp 00154000 08:33 267042     /lib/libc-2.12.1.so
+b775d000-b775e000 rwxp 00156000 08:33 267042     /lib/libc-2.12.1.so
+b775e000-b7762000 rwxp 00000000 00:00 0 
+b7762000-b7764000 r-xp 00000000 08:33 267044     /lib/libdl-2.12.1.so
+b7764000-b7765000 r-xp 00001000 08:33 267044     /lib/libdl-2.12.1.so
+b7765000-b7766000 rwxp 00002000 08:33 267044     /lib/libdl-2.12.1.so
+b7766000-b776d000 r-xp 00000000 08:33 1251907    /opt/sun-jdk-1.6.0.23/jre/lib/i386/jli/libjli.so
+b776d000-b776f000 rwxp 00006000 08:33 1251907    /opt/sun-jdk-1.6.0.23/jre/lib/i386/jli/libjli.so
+b776f000-b7784000 r-xp 00000000 08:33 267046     /lib/libpthread-2.12.1.so
+b7784000-b7785000 r-xp 00014000 08:33 267046     /lib/libpthread-2.12.1.so
+b7785000-b7786000 rwxp 00015000 08:33 267046     /lib/libpthread-2.12.1.so
+b7786000-b7788000 rwxp 00000000 00:00 0 
+b7789000-b7791000 rwxs 00000000 08:33 1181735    /tmp/hsperfdata_fon/28621
+b7791000-b7797000 r-xp 00000000 08:33 267014     /lib/libnss_compat-2.12.1.so
+b7797000-b7798000 r-xp 00006000 08:33 267014     /lib/libnss_compat-2.12.1.so
+b7798000-b7799000 rwxp 00007000 08:33 267014     /lib/libnss_compat-2.12.1.so
+b7799000-b77bc000 r-xp 00000000 08:33 1251925    /opt/sun-jdk-1.6.0.23/jre/lib/i386/libjava.so
+b77bc000-b77be000 rwxp 00023000 08:33 1251925    /opt/sun-jdk-1.6.0.23/jre/lib/i386/libjava.so
+b77be000-b77c9000 r-xp 00000000 08:33 1251923    /opt/sun-jdk-1.6.0.23/jre/lib/i386/libverify.so
+b77c9000-b77ca000 rwxp 0000b000 08:33 1251923    /opt/sun-jdk-1.6.0.23/jre/lib/i386/libverify.so
+b77ca000-b77cb000 rwxp 00000000 00:00 0 
+b77cb000-b77e7000 r-xp 00000000 08:33 267045     /lib/ld-2.12.1.so
+b77e7000-b77e8000 r-xp 00000000 00:00 0          [vdso]
+b77e8000-b77e9000 r-xp 0001c000 08:33 267045     /lib/ld-2.12.1.so
+b77e9000-b77ea000 rwxp 0001d000 08:33 267045     /lib/ld-2.12.1.so
+bfca4000-bfcc6000 rwxp 00000000 00:00 0          [stack]
+
+VM Arguments:
+jvm_args: -Dvce.launchers=org.eclipse.ve.internal.java.vce.launcher.remotevm.JFCLauncher -Dvce.launcher.class=edu.aueb.cs.uw.Upwords -Dfile.encoding=UTF-8 -Xbootclasspath:/opt/android-sdk-update-manager/platforms/android-7/android.jar 
+java_command: org.eclipse.ve.internal.java.vce.launcher.remotevm.JavaBeansLauncher
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+JAVA_HOME=/etc/java-config-2/current-system-vm
+CLASSPATH=.
+PATH=/usr/local/bin:/usr/bin:/bin:/opt/bin:/usr/i486-pc-linux-gnu/gcc-bin/4.1.2:/usr/i686-pc-linux-gnu/gcc-bin/4.4.5:/opt/sun-jdk-1.4.2.19/bin:/opt/sun-jdk-1.4.2.19/jre/bin:/opt/sun-jdk-1.4.2.19/jre/javaws:/usr/kde/3.5/bin:/usr/qt/3/bin://opt/android-sdk-update-manager/tools:/usr/lib/subversion/bin:/usr/games/bin:/opt/real/RealPlayer
+LD_LIBRARY_PATH=/opt/sun-jdk-1.6.0.23/jre/lib/i386/server:/opt/sun-jdk-1.6.0.23/jre/lib/i386:/opt/sun-jdk-1.6.0.23/jre/../lib/i386::/usr/lib:/usr/lib/xulrunner-devel-1.9.2
+SHELL=/bin/bash
+DISPLAY=:0
+
+Signal Handlers:
+SIGSEGV: [libjvm.so+0x6e1a10], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGBUS: [libjvm.so+0x6e1a10], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGFPE: [libjvm.so+0x5a37a0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGPIPE: [libjvm.so+0x5a37a0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGXFSZ: [libjvm.so+0x5a37a0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGILL: [libjvm.so+0x5a37a0], sa_mask[0]=0x7ffbfeff, sa_flags=0x10000004
+SIGUSR1: SIG_DFL, sa_mask[0]=0x00000000, sa_flags=0x00000000
+SIGUSR2: [libjvm.so+0x5a6780], sa_mask[0]=0x00000004, sa_flags=0x10000004
+SIGHUP: SIG_DFL, sa_mask[0]=0x00000000, sa_flags=0x00000000
+SIGINT: SIG_DFL, sa_mask[0]=0x00000000, sa_flags=0x00000000
+SIGTERM: SIG_DFL, sa_mask[0]=0x00000000, sa_flags=0x00000000
+SIGQUIT: SIG_DFL, sa_mask[0]=0x00000000, sa_flags=0x00000000
+
+
+---------------  S Y S T E M  ---------------
+
+OS:Gentoo Base System release 2.0.1-r1
+
+uname:Linux 2.6.36-gentoo #4 SMP Fri Oct 22 00:46:47 EEST 2010 i686
+libc:glibc 2.12.1 NPTL 2.12.1 
+rlimit: STACK 8192k, CORE 0k, NPROC 26332, NOFILE 1024, AS infinity
+load average:1.23 1.17 1.17
+
+/proc/meminfo:
+MemTotal:        3370920 kB
+MemFree:          949884 kB
+Buffers:           31968 kB
+Cached:           502848 kB
+SwapCached:        18944 kB
+Active:          1349724 kB
+Inactive:         967132 kB
+Active(anon):    1167972 kB
+Inactive(anon):   653224 kB
+Active(file):     181752 kB
+Inactive(file):   313908 kB
+Unevictable:           8 kB
+Mlocked:               8 kB
+HighTotal:       2497992 kB
+HighFree:         377728 kB
+LowTotal:         872928 kB
+LowFree:          572156 kB
+SwapTotal:        506040 kB
+SwapFree:         210140 kB
+Dirty:               264 kB
+Writeback:             0 kB
+AnonPages:       1763792 kB
+Mapped:           138420 kB
+Shmem:             39156 kB
+Slab:              46972 kB
+SReclaimable:      26228 kB
+SUnreclaim:        20744 kB
+KernelStack:        4016 kB
+PageTables:        12648 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:     2191500 kB
+Committed_AS:    5627020 kB
+VmallocTotal:     122880 kB
+VmallocUsed:       47716 kB
+VmallocChunk:      58876 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       4096 kB
+DirectMap4k:      798712 kB
+DirectMap4M:      110592 kB
+
+
+CPU:total 4 (4 cores per cpu, 1 threads per core) family 6 model 23 stepping 10, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1
+
+Memory: 4k page, physical 3370920k(949884k free), swap 506040k(210140k free)
+
+vm_info: Java HotSpot(TM) Server VM (19.0-b09) for linux-x86 JRE (1.6.0_23-b05), built on Nov 12 2010 14:07:22 by "java_re" with gcc 3.2.1-7a (J2SE release)
+
+time: Fri Dec 17 14:50:53 2010
+elapsed time: 0 seconds
+

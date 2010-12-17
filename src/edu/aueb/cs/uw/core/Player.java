@@ -1,5 +1,6 @@
 package edu.aueb.cs.uw.core;
 
+
 public class Player {
 	
 	private String nickname;
@@ -9,7 +10,8 @@ public class Player {
 	private int color;
 	private int score;
 	
-	public Player(String nickname,int color, TilePool pool){
+	public Player(String nickname,int color,int playerID, TilePool pool){
+		this.setPlayerID(playerID);
 		this.setColor(color);
 		this.setNickname(nickname);
 		this.setPool(pool);
@@ -17,6 +19,23 @@ public class Player {
 		this.setScore(0);
 	}
 
+	/*public Player(Parcel in){
+		readFromParcel(in);
+		this.setPool(null);
+		this.tray=new Tray(playerID, pool);
+		this.setScore(0);
+	}*/
+	
+	/*public static final Parcelable.Creator<Player> CREATOR = new Parcelable.Creator<Player>() {
+        public Player createFromParcel(Parcel in) {
+            return new Player(in);
+        }
+ 
+        public Player[] newArray(int size) {
+            return new Player[size];
+        }
+    };*/
+	
 	public void setPlayerID(int playerID) {
 		this.playerID = playerID;
 	}
@@ -24,6 +43,8 @@ public class Player {
 	public int getPlayerID() {
 		return playerID;
 	}
+	
+	
 
 	public void setTray(Tray tray) {
 		this.tray = tray;
@@ -65,5 +86,24 @@ public class Player {
 	public int getScore() {
 		return score;
 	}
+/*
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(nickname);
+		dest.writeInt(color);
+		dest.writeInt(playerID);		
+	}
+	
+	public void readFromParcel(Parcel in) {
+		this.nickname=in.readString();
+		this.color=in.readInt();
+		this.playerID=in.readInt();
+	}*/
 	
 }

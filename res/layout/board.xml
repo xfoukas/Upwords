@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-   >    
+              android:orientation="horizontal"
+              android:layout_width="fill_parent" 
+              android:layout_height="fill_parent"
+              android:paddingLeft="3dp"
+              android:paddingRight="3dp"
+              android:paddingTop="3dp"
+              >
+ 
+  <LinearLayout android:orientation="vertical"
+                android:layout_width="fill_parent" 
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                >
     <edu.aueb.cs.uw.BoardView
        android:id="@+id/board_view"
        android:layout_width="fill_parent" 
@@ -14,6 +23,29 @@
        android:longClickable="true"
        android:drawSelectorOnTop="false"/>
 
-     
+     <LinearLayout android:id="@+id/toolbar_horizontal"
+                  android:orientation="horizontal"
+                  android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
+                  >
+   	  <ImageButton android:id="@+id/exit_button_horizontal"
+                   style="@style/toolbar_button"
+    	           android:src="@drawable/exit"
+                   />
+   	  <ImageButton android:id="@+id/giveturn_button_horizontal"
+                   style="@style/toolbar_button"
+    	           android:src="@drawable/give_turn"
+                   />
+   	  <ImageButton android:id="@+id/undo_button_horizontal"
+                   style="@style/toolbar_button"
+    	           android:src="@drawable/undo"
+                   />
+   	  <ImageButton android:id="@+id/endturn_button_horizontal"
+                   style="@style/toolbar_button"
+    	           android:src="@drawable/end_turn"
+                   />
+    </LinearLayout>
+  </LinearLayout>
+    
     
 </LinearLayout>

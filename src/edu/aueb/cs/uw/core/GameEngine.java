@@ -9,9 +9,6 @@ public class GameEngine {
 	private int playerTurn;
 	private int gaveUpTurn;
 	
-	public GameEngine(){
-		this(new GameConfigs());
-	}
 	
 	public GameEngine(GameConfigs gc){
 		this.gc=gc;

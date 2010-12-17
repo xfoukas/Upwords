@@ -10,9 +10,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-		<activity android:name=".Configs"></activity>
-		<activity android:name=".Board"></activity>
-		<activity android:name=".About"></activity>
+		<activity android:name=".ConfigsActivity"></activity>
+		<activity android:name=".BoardActivity"></activity>
+		<activity android:name=".AboutActivity"></activity>
     </application>
 
 

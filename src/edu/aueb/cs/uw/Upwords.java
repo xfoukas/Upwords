@@ -1,5 +1,7 @@
 package edu.aueb.cs.uw;
 
+
+import edu.aueb.cs.uw.core.GameConfigs;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,27 +20,35 @@ public class Upwords extends Activity {
         NewGameButton.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
-        		Intent StartGameIntent = new Intent(Upwords.this,Configs.class);
-        		startActivity(StartGameIntent);
+        		Intent startGameIntent = new Intent(Upwords.this,ConfigsActivity.class);
+        		startActivity(startGameIntent);
         	}
+        	
         });
         
+        /*Manages the quick game*/
         Button QuickStartButton = (Button)findViewById(R.id.quick_start);
         QuickStartButton.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
-        		Intent StartGameIntent = new Intent(Upwords.this,Board.class);
-        		startActivity(StartGameIntent);
+        		Intent quickGameIntent = new Intent(Upwords.this,BoardActivity.class);
+        		/*pass the default game configs to the activity*/
+        		Bundle b = new Bundle();
+                b.putParcelable("edu.aueb.cs.uw.core.GameConfigs",new GameConfigs());
+        		quickGameIntent.putExtras(b);
+        		startActivity(quickGameIntent);
         	}
+        	
         });
         
         Button AboutButton = (Button)findViewById(R.id.about);
         AboutButton.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
-        		Intent StartGameIntent = new Intent(Upwords.this,About.class);
-        		startActivity(StartGameIntent);
+        		Intent aboutIntent = new Intent(Upwords.this,AboutActivity.class);
+        		startActivity(aboutIntent);
         	}
+        	
         });
         
         Button ExitButton = (Button)findViewById(R.id.exit);
@@ -47,6 +57,7 @@ public class Upwords extends Activity {
         	public void onClick(View v) {
         		System.exit(0);
         	}
+        	
         });
     }
 }

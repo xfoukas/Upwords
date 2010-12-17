@@ -23,23 +23,23 @@ public class GameEngine {
 	}
 	
 	public void beginGame(){
-		this.playerTurn=0;
+		this.setPlayerTurn(0);
 		for(int i=0;i<players.length;i++)
 			players[i].getTray().fillTray();
 	}
 	
 	public void nextRound(){
-		players[playerTurn].setScore(getBoard().getScore());
-		players[playerTurn].getTray().fillTray();
+		players[getPlayerTurn()].setScore(getBoard().getScore());
+		players[getPlayerTurn()].getTray().fillTray();
 		getBoard().endTurn();
 		if(board.haveMadeChanges())
 			gaveUpTurn=0;
-		this.playerTurn=(playerTurn+1)%gc.getNumPlayers();
+		this.setPlayerTurn((getPlayerTurn()+1)%gc.getNumPlayers());
 	}
 	
 	public boolean isEndOfGame(){
 		if(!tp.hasMoreTiles()){
-			if(players[playerTurn].getTray().getNumUnusedTiles()==0)
+			if(players[getPlayerTurn()].getTray().getNumUnusedTiles()==0)
 				return true;
 		}
 		if(gaveUpTurn==gc.getNumPlayers())
@@ -82,7 +82,7 @@ public class GameEngine {
 	public boolean switchTile(int tilePos){
 		if(board.haveMadeChanges())
 			return false;
-		return players[playerTurn].getTray().switchTile(tilePos);
+		return players[getPlayerTurn()].getTray().switchTile(tilePos);
 	}
 
 	public void setBoard(Board board) {
@@ -106,5 +106,9 @@ public class GameEngine {
 				(playerID<0))
 			return null;
 		return players[playerID];
+	}
+
+	public int getPlayerTurn() {
+		return playerTurn;
 	}
 }

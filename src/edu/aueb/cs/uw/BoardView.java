@@ -82,7 +82,7 @@ public class BoardView extends View{
 			isInitialized=true;
 			setFocusable(true);
 		}
-
+		
 	}
 	
 	private void drawTemplate(Canvas canvas){

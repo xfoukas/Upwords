@@ -2,4 +2,8 @@
 <resources>
     <string name="hello">Hello World, Upwords!</string>
     <string name="app_name">Upwords</string>
+<string name="new_game">New Game</string>
+<string name="about">About</string>
+<string name="exit">Exit</string>
+<string name="quick_start">Quick Start</string>
 </resources>

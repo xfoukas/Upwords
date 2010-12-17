@@ -23,7 +23,7 @@ public class GameEngine {
 	}
 	
 	public void beginGame(){
-		this.setPlayerTurn(0);
+		playerTurn=0;
 		for(int i=0;i<players.length;i++)
 			players[i].getTray().fillTray();
 	}
@@ -34,7 +34,7 @@ public class GameEngine {
 		getBoard().endTurn();
 		if(board.haveMadeChanges())
 			gaveUpTurn=0;
-		this.setPlayerTurn((getPlayerTurn()+1)%gc.getNumPlayers());
+		playerTurn=(getPlayerTurn()+1)%gc.getNumPlayers();
 	}
 	
 	public boolean isEndOfGame(){

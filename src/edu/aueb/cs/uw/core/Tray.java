@@ -30,6 +30,7 @@ public class Tray {
 				addedTiles++;
 			} else break;
 		}
+		setNumOfTiles(getNumUnusedTiles() + addedTiles);
 		setNumUnusedTiles(getNumUnusedTiles() + addedTiles);
 		return addedTiles;
 	}
@@ -91,5 +92,28 @@ public class Tray {
 
 	public void setNumUnusedTiles(int numUnusedTiles) {
 		this.numUnusedTiles = numUnusedTiles;
+	}
+	
+	public String getTileLetter(int tile){
+		return Character.toString(tray[tile].getLetter());
+	}
+	
+	public void addTempRemovedTile(Tile t,int i){
+		tray[i]=t;
+	}
+	
+	public Tile temporaryRemoveTile(int i){
+		Tile t=null;
+		if(i>=0&&i<TRAY_SIZE){
+			t=tray[i];
+			tray[i]=null;
+		}
+		return t;
+	}
+	
+	public Tile getTile(int i){
+		if(i>=0&&i<TRAY_SIZE)
+			return tray[i];
+		return null;
 	}
 }

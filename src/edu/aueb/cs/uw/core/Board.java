@@ -45,6 +45,11 @@ public class Board {
 	
 	public Board(){
 		board=new TileStack[BOARD_SIZE][BOARD_SIZE];
+		for(int i=0;i<BOARD_SIZE;i++){
+			for(int j=0;j<BOARD_SIZE;j++){
+				board[i][j]=new TileStack();
+			}
+		}
 		tilesAdded=new LinkedList<AddedTile>();
 		setTurn(1);
 		isFirstWord=true;
@@ -303,10 +308,16 @@ public class Board {
 		t=stack.getTop();
 		if(t==null)
 			return true;
-		if(t.getLetter()==tile.getLetter())
-			return false;
+		if(tile!=null){
+			if(t.getLetter()==tile.getLetter())
+				return false;
+		}
 		return (stack.getTop().getAge()==turn)?
 			false:stack.canAddTile();
+	}
+	
+	public boolean canAddTile(int x,int y){
+		return canAddTile(x, y, null);
 	}
 	
 	public void nextTurn(){
@@ -329,6 +340,10 @@ public class Board {
 	
 	public boolean haveMadeChanges(){
 		return (tilesAdded.size()>0)?true:false;
+	}
+	
+	public TileStack [][] getTilePlacement(){
+		return board;
 	}
 	
 }

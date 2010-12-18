@@ -1,5 +1,6 @@
 package edu.aueb.cs.uw;
 
+
 import edu.aueb.cs.uw.core.GameEngine;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -9,6 +10,7 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
 public class BoardView extends View{
 
@@ -24,7 +26,8 @@ public class BoardView extends View{
 	private Context mContext;
 	private boolean isInitialized;
 	private GameEngine ge;
-
+	private TextView v1,v2,v3,v4;
+	private TextView [] tv;
 
 	public BoardView( Context context, AttributeSet attrs ) 
     {
@@ -72,6 +75,8 @@ public class BoardView extends View{
 			strokePaint.setColor(Color.WHITE);
 			tileStrokePaint=new Paint();
 			tileStrokePaint.setStyle(Paint.Style.STROKE);
+			tv=new TextView[4];
+	   
 			float curWidth = tileStrokePaint.getStrokeWidth();
 			curWidth *= 2;
 			if ( curWidth < 2 ) {
@@ -93,6 +98,41 @@ public class BoardView extends View{
 		canvas.drawRect(tRect, fillTrayPaint);
 		canvas.drawRect(scRect, fillScorePaint);
 		drawBoard(canvas);
+		drawScore();
+	}
+	
+	private void drawScore()
+	{		
+		tv[0]=v1;
+		tv[1]=v2;
+		tv[2]=v3;
+		tv[3]=v4;
+		
+		int turn=ge.getPlayerTurn();
+		int NumOfPlayers=ge.getNumPlayers();		
+			
+		for(int i=0;i<4;i++)
+		{
+			if(i<NumOfPlayers)
+			{				
+				tv[i].setText(ge.getPlayer(i).getNickname()+" "+ge.getPlayer(i).getScore());
+				tv[i].setTextColor(ge.getPlayer(i).getColor());
+				
+				if(i==turn)
+				{
+					tv[i].setTextSize(20);
+				}
+				else
+				{
+					tv[i].setTextSize(12);
+				}
+				tv[i].setVisibility(View.VISIBLE);
+			}
+			else
+			{
+				tv[i].setVisibility(View.GONE);
+			}
+		}
 	}
 	
 	private void drawBoard(Canvas canvas)
@@ -157,6 +197,25 @@ public class BoardView extends View{
 
 	public void setGameEngine(GameEngine ge) {
 		this.ge=ge;
+	}	
+	
+	public void setTextView1(View v)
+	{
+		this.v1=(TextView)v;
 	}
-
+	
+	public void setTextView2(View v)
+	{
+		this.v2=(TextView)v;
+	}
+	
+	public void setTextView3(View v)
+	{
+		this.v3=(TextView)v;
+	}
+	
+	public void setTextView4(View v)
+	{
+		this.v4=(TextView)v;
+	}
 }

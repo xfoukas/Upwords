@@ -28,6 +28,11 @@ public class GameEngine {
 			players[i].getTray().fillTray();
 	}
 	
+	public int getNumPlayers()
+	{
+		return gc.getNumPlayers();
+	}
+	
 	public void nextRound(){
 		players[getPlayerTurn()].setScore(getBoard().getScore());
 		players[getPlayerTurn()].getTray().fillTray();

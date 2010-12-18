@@ -7,10 +7,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Paint.Align;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.TextView;
 
 public class BoardView extends View{
 
@@ -21,13 +21,13 @@ public class BoardView extends View{
     private Paint fillTrayPaint;
     private Paint strokePaint;
     private Paint tileStrokePaint;
+    private Paint centralSquarePaint;
+    private Paint scorePaint;
 	private int defaultFontSize;
 	private Dimensions dimensions;
 	private Context mContext;
 	private boolean isInitialized;
 	private GameEngine ge;
-	private TextView v1,v2,v3,v4;
-	private TextView [] tv;
 
 	public BoardView( Context context, AttributeSet attrs ) 
     {
@@ -75,7 +75,9 @@ public class BoardView extends View{
 			strokePaint.setColor(Color.WHITE);
 			tileStrokePaint=new Paint();
 			tileStrokePaint.setStyle(Paint.Style.STROKE);
-			tv=new TextView[4];
+			centralSquarePaint=new Paint();
+			centralSquarePaint.setColor(Color.RED);
+			scorePaint=new Paint(Paint.ANTI_ALIAS_FLAG);
 	   
 			float curWidth = tileStrokePaint.getStrokeWidth();
 			curWidth *= 2;
@@ -98,41 +100,29 @@ public class BoardView extends View{
 		canvas.drawRect(tRect, fillTrayPaint);
 		canvas.drawRect(scRect, fillScorePaint);
 		drawBoard(canvas);
-		drawScore();
+		drawScore(canvas);
 	}
 	
-	private void drawScore()
+	private void drawScore(Canvas canvas)
 	{		
-		tv[0]=v1;
-		tv[1]=v2;
-		tv[2]=v3;
-		tv[3]=v4;
+		if(ge==null) return;
 		
 		int turn=ge.getPlayerTurn();
-		int NumOfPlayers=ge.getNumPlayers();		
-			
-		for(int i=0;i<4;i++)
-		{
-			if(i<NumOfPlayers)
-			{				
-				tv[i].setText(ge.getPlayer(i).getNickname()+" "+ge.getPlayer(i).getScore());
-				tv[i].setTextColor(ge.getPlayer(i).getColor());
-				
-				if(i==turn)
-				{
-					tv[i].setTextSize(20);
-				}
-				else
-				{
-					tv[i].setTextSize(12);
-				}
-				tv[i].setVisibility(View.VISIBLE);
-			}
-			else
-			{
-				tv[i].setVisibility(View.GONE);
-			}
+		int NumOfPlayers=ge.getNumPlayers();
+		
+		int maxHeight=dimensions.getScoreHeight();
+		float scoreWidth=dimensions.getTotalWidth()/NumOfPlayers;
+		
+		scorePaint.setTextAlign(Align.CENTER);
+		
+		for(int i=0;i<NumOfPlayers;i++){
+			if(i==turn)
+				scorePaint.setTextSize(1.3f*defaultFontSize);
+			scorePaint.setColor(ge.getPlayer(i).getColor());
+			canvas.drawText(ge.getPlayer(i).getNickname()+":"+ge.getPlayer(i).getScore(),i*scoreWidth+(scoreWidth/2) ,3*maxHeight/4, scorePaint);
+			scorePaint.setTextSize(defaultFontSize);
 		}
+
 	}
 	
 	private void drawBoard(Canvas canvas)
@@ -142,6 +132,14 @@ public class BoardView extends View{
 		int bWidth=bHeight;
 		int sHeight=dimensions.getScoreHeight();
 		int padding=dimensions.getPadding();
+		
+		int left=dimensions.getPadding()+(BOARD_SIZE/2-1)*dimensions.getCellSize();
+		int top=dimensions.getScoreHeight()+(BOARD_SIZE/2-1)*dimensions.getCellSize();
+		int bottom= 2*dimensions.getCellSize()+top;
+		int right= 2*dimensions.getCellSize()+left;
+		
+		Rect centralRect=new Rect(left, top, right, bottom);
+		canvas.drawRect(centralRect, centralSquarePaint);
 		
 		for(int i=0;i<11;i++)
 		{
@@ -154,6 +152,7 @@ public class BoardView extends View{
 			int y=i*dimensions.getCellSize();
 			canvas.drawLine(padding,sHeight+y,padding+bWidth,sHeight+y,strokePaint);
 		}
+		
 	}
 
 	private Dimensions calculateDimensions(int width,int height){
@@ -199,23 +198,4 @@ public class BoardView extends View{
 		this.ge=ge;
 	}	
 	
-	public void setTextView1(View v)
-	{
-		this.v1=(TextView)v;
-	}
-	
-	public void setTextView2(View v)
-	{
-		this.v2=(TextView)v;
-	}
-	
-	public void setTextView3(View v)
-	{
-		this.v3=(TextView)v;
-	}
-	
-	public void setTextView4(View v)
-	{
-		this.v4=(TextView)v;
-	}
 }

@@ -28,13 +28,6 @@ public class BoardActivity extends Activity
       
         //bv.setContext(setApplicationContext()); 
         
-        View [] v={findViewById(R.id.text_view_one),findViewById(R.id.text_view_two),findViewById(R.id.text_view_three),findViewById(R.id.text_view_four)};
-           
-        bv.setTextView1(v[0]);
-        bv.setTextView2(v[1]);
-        bv.setTextView3(v[2]);
-        bv.setTextView4(v[3]);       
-        
         ImageButton ExitButton = (ImageButton)findViewById(R.id.exit_button_horizontal);
         ExitButton.setOnClickListener(new OnClickListener() {
         	

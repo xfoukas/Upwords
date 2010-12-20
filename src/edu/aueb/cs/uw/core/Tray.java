@@ -40,7 +40,11 @@ public class Tray {
 				||(i<0))
 			return null;
 		setNumUnusedTiles(getNumUnusedTiles() - 1);
-		return tray[i];
+		Tile t=tray[i];
+		for(int j=i;j<numOfTiles-1;j++)
+			tray[j]=tray[j+1];
+		tray[numOfTiles-1]=null;
+		return t;
 	}
 	
 	private int getNextFreeSpace() {

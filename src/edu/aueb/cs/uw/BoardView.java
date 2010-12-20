@@ -41,7 +41,10 @@ public class BoardView extends View{
 	private Context mContext;
 	private boolean isInitialized;
 	private boolean tileIsMoved;
+	private boolean boardTileIsMoved;
 	private int selectedTileNum;
+	private int selectedBoardTileX;
+	private int selectedBoardTileY;
 	private int movingTileX,movingTileY;
 	private GameEngine ge;
 	private Rect [] tilesTray;
@@ -93,35 +96,52 @@ public class BoardView extends View{
 				if(!tileIsMoved)
 					movingTile=t.temporaryRemoveTile(selectedTileNum);
 				tileIsMoved=true;
-				if(x<dimensions.getCellSize()/2)
-					movingTileX=dimensions.getCellSize()/2;
-				else if(x>dimensions.getTotalWidth()-dimensions.getCellSize()/2)
-					movingTileX=dimensions.getTotalWidth()-dimensions.getCellSize()/2;
-				else 
-					movingTileX=x;
-				if(y<dimensions.getCellSize()/2)
-					movingTileY=dimensions.getCellSize()/2;
-				else if(y>dimensions.getTotalHeight()-dimensions.getCellSize()/2)
-					movingTileY=dimensions.getTotalHeight()-dimensions.getCellSize()/2;
-				else
-					movingTileY=y;
+				movingTileX=getMovingTileXPos(x);
+				movingTileY=getMovingTileYPos(y);
+			} else if(selectedBoardTileX!=-1&&selectedBoardTileY!=-1){
+				x=(int)event.getX();
+				y=(int)event.getY();
+				Board b=ge.getBoard();
+				if(!tileIsMoved)
+					movingTile=b.removeTile(selectedBoardTileX, selectedBoardTileY);
+				tileIsMoved=true;
+				boardTileIsMoved=true;
+				movingTileX=getMovingTileXPos(x);
+				movingTileY=getMovingTileYPos(y);
 			}
 			
 			break;
 		case MotionEvent.ACTION_UP:
 			if(tileIsMoved){
-				/*TODO not what should happen,
-				 * just a test. Normally it should check
-				 * where it is dropped
-				 */
+				x=(int)event.getX();
+				y=(int)event.getY();
+				Board b=ge.getBoard();
 				int turn=ge.getPlayerTurn();
 				Tray t=ge.getPlayer(turn).getTray();
-				t.addTempRemovedTile(movingTile, selectedTileNum);
-				tileIsMoved=false;
-				selectedTileNum=-1;
+				if(getArea(x, y)==BOARD_AREA){
+					int i=findCellRow(y);
+					int j=findCellCol(x);
+					if(b.canAddTile(i,j,movingTile)) {
+						b.addTile(movingTile, i, j);
+						if(!boardTileIsMoved) {
+							t.addTempRemovedTile(movingTile, selectedTileNum);
+							t.useTile(selectedTileNum);
+						}
+					}
+					else {
+						if(boardTileIsMoved)
+							b.addTile(movingTile, selectedBoardTileX, selectedBoardTileY);
+						else
+							t.addTempRemovedTile(movingTile, selectedTileNum);
+					}
+				} else if(selectedTileNum!=-1) {
+					t.addTempRemovedTile(movingTile, selectedTileNum); 
+				} else if(selectedBoardTileX!=-1&&selectedBoardTileY!=-1) {
+					b.addTile(movingTile, selectedBoardTileX, selectedBoardTileY);					
+				}
+				undoMovingChanges();
 			} else {
-				tileIsMoved=false;
-				selectedTileNum=-1;
+				undoMovingChanges();
 			}
 			break;
 		default:
@@ -129,12 +149,37 @@ public class BoardView extends View{
 		}
 		return true;
 	}
+	
+	private int getMovingTileXPos(int x){
+		if(x<dimensions.getCellSize()/2)
+			return dimensions.getCellSize()/2;
+		else if(x>dimensions.getTotalWidth()-dimensions.getCellSize()/2)
+			return dimensions.getTotalWidth()-dimensions.getCellSize()/2;
+		else 
+			return x;
+	}
+	
+	private int getMovingTileYPos(int y){
+		if(y<dimensions.getCellSize()/2)
+			return dimensions.getCellSize()/2;
+		else if(y>dimensions.getTotalHeight()-dimensions.getCellSize()/2)
+			return dimensions.getTotalHeight()-dimensions.getCellSize()/2;
+		else
+			return y;
+	}
 
 	private void handleBoardClick(int x, int y) {
-		/* TODO
-		 * If click on a place that has tiles
-		 * open queue activity, else nothing
-		 */
+		Board b=ge.getBoard();
+		int turn=b.getTurn();
+		int i=findCellRow(y);
+		int j=findCellCol(x);
+		Tile t=b.getTile(i, j);
+		if(t!=null){
+			if(t.getAge()==turn) {
+				selectedBoardTileX=i;
+				selectedBoardTileY=j;
+			}			
+		}
 	}
 
 	private void handleTrayClick(int x, int y) {
@@ -143,6 +188,14 @@ public class BoardView extends View{
 				selectedTileNum=i;
 			}
 		}
+	}
+	
+	private void undoMovingChanges(){
+		tileIsMoved=false;
+		boardTileIsMoved=false;
+		selectedTileNum=-1;
+		selectedBoardTileX=-1;
+		selectedBoardTileY=-1;
 	}
 
 	private void initialise(Context context) {
@@ -187,7 +240,10 @@ public class BoardView extends View{
 			dimensions=calculateDimensions(width, height);
 			isInitialized=true;
 			tileIsMoved=false;
+			boardTileIsMoved=false;
 			selectedTileNum=-1;
+			selectedBoardTileX=-1;
+			selectedBoardTileY=-1;
 			setFocusable(true);
 		}
 		
@@ -285,8 +341,8 @@ public class BoardView extends View{
 			tileSize=4*dimensions.getTrayHeight()/5;
 		int bot_border=(dimensions.getTrayHeight()-tileSize)/2;
 		int space=(dimensions.getTotalWidth()-(tileSize*Tray.TRAY_SIZE))/(Tray.TRAY_SIZE+1);
-		tilesTray=new Rect[t.getNumOfTiles()]; 
-		for(int i=0;i<t.getNumOfTiles();i++){
+		tilesTray=new Rect[t.getNumUnusedTiles()]; 
+		for(int i=0;i<t.getNumUnusedTiles();i++){
 			if(t.getTile(i)==null) continue;
 			if(selectedTileNum==i)
 				tileFillPaint.setColor(Color.YELLOW);
@@ -340,12 +396,15 @@ public class BoardView extends View{
 		for(int i=0;i<ts.length;i++){
 			for(int j=0;j<ts[i].length;j++){
 				if(b.hasTile(i, j)){
-					left=dimensions.getPadding()+i*dimensions.getCellSize();
+					if(selectedBoardTileX==i&&selectedBoardTileY==j)
+						tileFillPaint.setColor(Color.YELLOW);
+					left=dimensions.getPadding()+j*dimensions.getCellSize();
 					right=left+dimensions.getCellSize();
 					top=dimensions.getScoreHeight()+i*dimensions.getCellSize();
 					bottom=top+dimensions.getCellSize();
 					tileTextPaint.setTextSize(2*defaultFontSize);
 					drawTile(canvas,left , top, right, bottom, Character.toString(ts[i][j].getTop().getLetter()));
+					tileFillPaint.setColor(Color.WHITE);
 				}
 			}
 		}

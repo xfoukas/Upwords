@@ -270,6 +270,12 @@ public class Board {
 		}
 	}
 	
+	public Tile getTile(int i, int j){
+		if(!board[i][j].isEmpty())
+			return board[i][j].getTop();
+		return null;
+	}
+	
 	public boolean addTile(Tile tile,int x, int y){
 		boolean added;
 		if((board[x][y])==null)
@@ -284,9 +290,10 @@ public class Board {
 		return added;
 	}
 	
-	public boolean removeTile(int x,int y){
+	public Tile removeTile(int x,int y){
 		TileStack ts=board[x][y];
-		return ts.removeTop();
+		return ts.deleteTop();
+//		return ts.removeTop();
 	}
 	
 	public boolean removeTile(Tile tile){

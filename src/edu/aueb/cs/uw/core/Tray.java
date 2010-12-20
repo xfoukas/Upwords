@@ -106,6 +106,16 @@ public class Tray {
 		tray[i]=t;
 	}
 	
+	public void addTile(Tile t){
+		for(int i=0;i<tray.length;i++){
+			if(tray[i]==null){
+				tray[i]=t;
+				setNumUnusedTiles(++numUnusedTiles);
+				break;
+			}
+		}
+	}
+	
 	public Tile temporaryRemoveTile(int i){
 		Tile t=null;
 		if(i>=0&&i<TRAY_SIZE){

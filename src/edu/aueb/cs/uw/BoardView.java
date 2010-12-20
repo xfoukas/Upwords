@@ -134,10 +134,16 @@ public class BoardView extends View{
 						else
 							t.addTempRemovedTile(movingTile, selectedTileNum);
 					}
-				} else if(selectedTileNum!=-1) {
-					t.addTempRemovedTile(movingTile, selectedTileNum); 
-				} else if(selectedBoardTileX!=-1&&selectedBoardTileY!=-1) {
-					b.addTile(movingTile, selectedBoardTileX, selectedBoardTileY);					
+				} else if(getArea(x, y)==TRAY_AREA) {
+					if(boardTileIsMoved)
+						t.addTile(movingTile);
+					else if(selectedTileNum!=-1)
+						t.addTempRemovedTile(movingTile, selectedTileNum); 
+				} else{
+					if(selectedTileNum!=-1) 
+						t.addTempRemovedTile(movingTile, selectedTileNum); 
+					else if(selectedBoardTileX!=-1&&selectedBoardTileY!=-1) 
+						b.addTile(movingTile, selectedBoardTileX, selectedBoardTileY);
 				}
 				undoMovingChanges();
 			} else {

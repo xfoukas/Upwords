@@ -36,6 +36,7 @@ public class BoardActivity extends Activity
         	}
         	
         });
+        
     }
     
 }

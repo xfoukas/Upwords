@@ -5,6 +5,14 @@ android:background="@drawable/scrabble_tiles"
 android:layout_width="fill_parent"
 android:layout_height="fill_parent"
 android:orientation="vertical">
+
+             
+ <ImageView   
+ android:layout_width="wrap_content"
+ android:layout_margin="10px"
+ android:layout_height="wrap_content"
+ android:src="@drawable/upwords"/>
+
 <Button
 android:id="@+id/new_game"
 android:layout_width="200px"

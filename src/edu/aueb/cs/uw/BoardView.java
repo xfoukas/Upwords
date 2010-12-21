@@ -28,6 +28,7 @@ public class BoardView extends View{
 
 	private Paint fillScorePaint;
     private Paint fillTrayPaint;
+    private Paint fillBoardPaint;
     private Paint strokePaint;
     private Paint tileFillPaint;
     private Paint tileStrokePaint;
@@ -211,9 +212,11 @@ public class BoardView extends View{
 			int height=getHeight();
 			defaultFontSize = (int)(MIN_FONT_DIPS * scale + 0.5f);
 			fillScorePaint=new Paint(Paint.ANTI_ALIAS_FLAG);
-			fillScorePaint.setColor(Color.GRAY);
+			fillScorePaint.setARGB(200, 75, 75, 75);
 			fillTrayPaint=new Paint();
-			fillTrayPaint.setColor(Color.DKGRAY<<3);
+			fillTrayPaint.setARGB(200, 75, 75, 75);
+			fillBoardPaint=new Paint();
+			fillBoardPaint.setARGB(240, 150, 150, 150);
 			strokePaint=new Paint();
 			strokePaint.setStyle(Paint.Style.STROKE);
 			strokePaint.setColor(Color.WHITE);
@@ -256,7 +259,8 @@ public class BoardView extends View{
 	}
 	
 	private void drawTemplate(Canvas canvas){
-		canvas.drawColor(Color.DKGRAY);
+		Rect bRect=new Rect(0,dimensions.getScoreHeight(),dimensions.getTotalWidth(),dimensions.getScoreHeight()+dimensions.getBoardheight());
+		canvas.drawRect(bRect, fillBoardPaint);
 		Rect scRect=new Rect(0,0, dimensions.getTotalWidth(),dimensions.getTotalHeight()-dimensions.getBoardheight()-dimensions.getTrayHeight());
 		canvas.drawRect(scRect, fillScorePaint);
 		Rect tRect=new Rect(0,dimensions.getScoreHeight()+dimensions.getBoardheight(), dimensions.getTotalWidth(),dimensions.getTotalHeight());

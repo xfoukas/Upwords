@@ -1,6 +1,8 @@
 package edu.aueb.cs.uw;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,7 +34,21 @@ public class BoardActivity extends Activity
         ExitButton.setOnClickListener(new OnClickListener() {
         	
         	public void onClick(View v) {
-        		System.exit(0);
+        		AlertDialog.Builder builder = new AlertDialog.Builder(BoardActivity.this);
+        		builder.setMessage("Are you sure you want to quit current game?")
+        		       .setCancelable(false)
+        		       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        		           public void onClick(DialogInterface dialog, int id) {
+        		                BoardActivity.this.finish();
+        		           }
+        		       })
+        		       .setNegativeButton("No", new DialogInterface.OnClickListener() {
+        		           public void onClick(DialogInterface dialog, int id) {
+        		                dialog.cancel();
+        		           }
+        		       });
+        		AlertDialog alert = builder.create();
+        		alert.show();
         	}
         	
         });

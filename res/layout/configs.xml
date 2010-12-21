@@ -1,11 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  	android:id="@+id/widget0"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
-	android:orientation="vertical">
-  
-
-
-
-</LinearLayout>
+<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@android:id/tabhost"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+        <TabWidget
+            android:id="@android:id/tabs"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+        <FrameLayout
+            android:id="@android:id/tabcontent"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+               <RelativeLayout
+                  android:id="@+id/rl1"
+                  android:orientation="vertical"
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent">
+                  <CheckBox android:id="@+id/cb1"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:text="Enable player" />
+                  <TextView 
+                     android:id="@+id/tv1"
+                     android:layout_width="fill_parent"
+                     android:layout_height="wrap_content" 
+                     android:text="Name:" 
+                     android:layout_below="@id/cb1"
+                     />
+                  <EditText
+                     android:id="@+id/et1"
+                     android:layout_width="fill_parent"
+                     android:layout_height="wrap_content"
+                     android:background="@android:drawable/editbox_background"
+                     android:layout_below="@id/tv1"
+                     />
+                  <TextView 
+                     android:id="@+id/tv1b"
+                     android:layout_width="fill_parent"
+                     android:layout_height="wrap_content" 
+                     android:text="Color:" 
+                     android:layout_below="@id/et1"
+                     />
+               </RelativeLayout>
+               <RelativeLayout
+                  android:id="@+id/rl2"
+                  android:orientation="vertical"
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent">
+                  <CheckBox android:id="@+id/cb2"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:text="Enable player" />
+                  <TextView 
+                     android:id="@+id/tv2"
+                     android:layout_width="fill_parent"
+                     android:layout_height="wrap_content" 
+                     android:text="Name:" 
+                     android:layout_below="@id/cb2"
+                     />
+                  <EditText
+                     android:id="@+id/et2"
+                     android:layout_width="fill_parent"
+                     android:layout_height="wrap_content"
+                     android:background="@android:drawable/editbox_background"
+                     android:layout_below="@id/tv2"
+                     />
+                  <TextView 
+                     android:id="@+id/tv2b"
+                     android:layout_width="fill_parent"
+                     android:layout_height="wrap_content" 
+                     android:text="Color:" 
+                     android:layout_below="@id/et2"
+                     />
+               </RelativeLayout>
+               <RelativeLayout
+                  android:id="@+id/rl3"
+                  android:orientation="vertical"
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent">
+                  <CheckBox android:id="@+id/cb3"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:text="Enable player" />
+                  <TextView 
+                     android:id="@+id/tv3"
+                     android:layout_width="fill_parent"
+                     android:layout_height="wrap_content" 
+                     android:text="Name:" 
+                     android:layout_below="@id/cb3"
+                     />
+                  <EditText
+                     android:id="@+id/et3"
+                     android:layout_width="fill_parent"
+                     android:layout_height="wrap_content"
+                     android:background="@android:drawable/editbox_background"
+                     android:layout_below="@id/tv3"
+                     />
+                  <TextView 
+                     android:id="@+id/tv3b"
+                     android:layout_width="fill_parent"
+                     android:layout_height="wrap_content" 
+                     android:text="Color:" 
+                     android:layout_below="@id/et3"
+                     />
+               </RelativeLayout>
+               <RelativeLayout
+                  android:id="@+id/rl4"
+                  android:orientation="vertical"
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent">
+                  <CheckBox android:id="@+id/cb4"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:text="Enable player" />
+                  <TextView 
+                     android:id="@+id/tv4"
+                     android:layout_width="fill_parent"
+                     android:layout_height="wrap_content" 
+                     android:text="Name:" 
+                     android:layout_below="@id/cb4"
+                     />
+                  <EditText
+                     android:id="@+id/et4"
+                     android:layout_width="fill_parent"
+                     android:layout_height="wrap_content"
+                     android:background="@android:drawable/editbox_background"
+                     android:layout_below="@id/tv4"
+                     />
+                  <TextView 
+                     android:id="@+id/tv4b"
+                     android:layout_width="fill_parent"
+                     android:layout_height="wrap_content" 
+                     android:text="Color:" 
+                     android:layout_below="@id/et4"
+                     />
+               </RelativeLayout>
+    	</FrameLayout>
+    </LinearLayout>
+</TabHost>

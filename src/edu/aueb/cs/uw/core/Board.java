@@ -7,6 +7,9 @@ public class Board {
 	public static final int BOARD_SIZE=10;
 	private static final int COL_ORIENT=1;
 	private static final int ROW_ORIENT=0;
+	private static final int HAS_CONNECTION=2;
+	private static final int IS_VALID_NO_CONNECTION=1;
+	private static final int INVALID=-1;
 	
 	private TileStack [][] board;
 	private LinkedList<AddedTile> tilesAdded;
@@ -144,6 +147,7 @@ public class Board {
 	private int getScoreHorizontal(int x,int y){
 		int score=0;
 		int firstOfRow=y;
+		int tilesCounted=0;
 		boolean isFirstLevel=true;
 		while(firstOfRow-1>=0){
 			if(!board[x][firstOfRow-1].isEmpty())
@@ -151,7 +155,10 @@ public class Board {
 			else break;
 		}
 		int i=firstOfRow;
-		do {
+		while(i<BOARD_SIZE){
+			if(board[x][i].isEmpty())
+				break;
+			tilesCounted++;
 			if(!board[x][i].hasSingleTile()){
 				isFirstLevel=false;
 				score+=board[x][i].getSize();
@@ -159,15 +166,18 @@ public class Board {
 			else
 				score++;
 			i++;
-		} while(!board[x][i].isEmpty());
+		}
 		if(isFirstLevel)
 			score*=2;
+		if(tilesCounted==1)
+			return 0;
 		return score;
 	}
 	
 	private int getScoreVertical(int x, int y){
 		int score=0;
 		int firstOfCol=x;
+		int tilesCounted=0;
 		boolean isFirstLevel=true;
 		while(firstOfCol-1>=0){
 			if(!board[firstOfCol-1][y].isEmpty())
@@ -175,7 +185,10 @@ public class Board {
 			else break;
 		}
 		int i=firstOfCol;
-		do {
+		while(i<BOARD_SIZE){
+			if(board[i][y].isEmpty())
+				break;
+			tilesCounted++;
 			if(!board[i][y].hasSingleTile()){
 				isFirstLevel=false;
 				score+=board[i][y].getSize();
@@ -183,9 +196,11 @@ public class Board {
 			else
 				score++;
 			i++;
-		} while(!board[i][y].isEmpty());
+		}
 		if(isFirstLevel)
 			score*=2;
+		if(tilesCounted==1)
+			return 0;
 		return score;
 	}
 	
@@ -197,6 +212,7 @@ public class Board {
 	public boolean isValidPlacement(){
 		int size;
 		boolean hasCentralCell=false;
+		boolean hasConnection=false;
 		size=tilesAdded.size();
 		if(size==0)
 			return false;
@@ -206,7 +222,7 @@ public class Board {
 			for(AddedTile t : tilesAdded){
 				if(isCentralCell(t.getX(), t.getY()))
 					hasCentralCell=true;
-				if(!isValidTilePlacement(t))
+				if(isValidTilePlacement(t)==INVALID)
 					return false;
 			}
 			return hasCentralCell;
@@ -217,13 +233,16 @@ public class Board {
 			return false;
 		}
 		for(AddedTile t : tilesAdded){
-			if(!isValidTilePlacement(t))
+			int validity=isValidTilePlacement(t);
+			if(validity==INVALID)
 				return false;
+			else if(validity==HAS_CONNECTION)
+				hasConnection=true;
 		}
-		return true;
+		return hasConnection;
 	}
 	
-	public boolean isValidTilePlacement(AddedTile tile){
+	public int isValidTilePlacement(AddedTile tile){
 		int numTiles=tilesAdded.size();
 		int tilesLeftToCheck=numTiles-1;
 		int x=tile.getX();
@@ -256,7 +275,7 @@ public class Board {
 			}
 		}
 		if(tilesAddedFound>0&&tilesAddedFound!=tilesLeftToCheck)
-			return false;
+			return INVALID;
 		/*Do the same for column*/
 		if(x>0){
 			int i=x-1;
@@ -281,11 +300,11 @@ public class Board {
 			}
 		}
 		if(tilesAddedFound>0&&tilesAddedFound!=tilesLeftToCheck)
-			return false;
+			return INVALID;
 		if(tilesAddedFound==0&&tilesLeftToCheck>0)
-			return false;
-		if(isFirstWord) return true;
-		return hasConnetcion;
+			return INVALID;
+		if(isFirstWord) return HAS_CONNECTION;
+		return(hasConnetcion)?HAS_CONNECTION:IS_VALID_NO_CONNECTION;
 	}
 
 	public boolean hasNeighbours(int x,int y){

@@ -34,7 +34,7 @@ public class GameEngine {
 	}
 	
 	public void nextRound(){
-		players[getPlayerTurn()].setScore(getBoard().getScore());
+		players[getPlayerTurn()].setScore(players[getPlayerTurn()].getScore()+getBoard().getScore());
 		players[getPlayerTurn()].getTray().fillTray();
 		getBoard().endTurn();
 		if(board.haveMadeChanges())

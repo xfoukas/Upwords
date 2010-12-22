@@ -99,25 +99,40 @@ public class BoardActivity extends Activity
 			
 			@Override
 			public void onClick(View v) {
-				ge.nextRound();
-				if(ge.isEndOfGame()){
-					String message;
-					Player p=ge.endGame();
-					if(p==null)
-						message="The game is a draw";
-					else
-						message="Player "+p.getNickname()+" wins!!!";
-					AlertDialog.Builder builder = new AlertDialog.Builder(BoardActivity.this);
-	        		builder.setMessage(message)
-	        		       .setCancelable(false)
-	        		       .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-	        		           public void onClick(DialogInterface dialog, int id) {
-	        		                BoardActivity.this.finish();
-	        		           }
-	        		       });
-	        		AlertDialog alert = builder.create();
-	        		alert.show();
-				}
+				
+				AlertDialog.Builder b = new AlertDialog.Builder(BoardActivity.this);
+        		b.setMessage("Finish turn?")
+        		       .setCancelable(false)
+        		       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        		           public void onClick(DialogInterface dialog, int id) {
+        		        	   ge.nextRound();
+        						if(ge.isEndOfGame()){
+        							String message;
+        							Player p=ge.endGame();
+        							if(p==null)
+        								message="The game is a draw";
+        							else
+        								message="Player "+p.getNickname()+" wins!!!";
+        							AlertDialog.Builder builder = new AlertDialog.Builder(BoardActivity.this);
+        			        		builder.setMessage(message)
+        			        		       .setCancelable(false)
+        			        		       .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        			        		           public void onClick(DialogInterface dialog, int id) {
+        			        		                BoardActivity.this.finish();
+        			        		           }
+        			        		       });
+        			        		AlertDialog alrt = builder.create();
+        			        		alrt.show();
+        						}
+        		           }
+        		       })
+        		       .setNegativeButton("No", new DialogInterface.OnClickListener() {
+        		           public void onClick(DialogInterface dialog, int id) {
+        		                dialog.cancel();
+        		           }
+        		       });
+        		AlertDialog alert = b.create();
+        		alert.show();	
 			}
 		});
     }

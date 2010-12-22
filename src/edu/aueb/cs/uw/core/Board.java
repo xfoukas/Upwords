@@ -212,7 +212,7 @@ public class Board {
 			return hasCentralCell;
 		}
 		if(size==1){
-			if(hasNeighbours(tilesAdded.getFirst().getX(), tilesAdded.getFirst().getX()))
+			if(hasNeighbours(tilesAdded.getFirst().getX(), tilesAdded.getFirst().getY()))
 				return true;
 			return false;
 		}
@@ -229,6 +229,7 @@ public class Board {
 		int x=tile.getX();
 		int y=tile.getY();
 		int tilesAddedFound=0;
+		boolean hasConnetcion=false;
 		/*Check row to the left of the tile
 		 * and then to the right
 		 */
@@ -238,6 +239,7 @@ public class Board {
 				if(!board[x][i].isEmpty()){
 					if(board[x][i].getTop().getAge()==turn)
 						tilesAddedFound++;
+					else hasConnetcion=true;
 				} else break;
 				i--;
 			}
@@ -248,6 +250,7 @@ public class Board {
 				if(!board[x][i].isEmpty()){
 					if(board[x][i].getTop().getAge()==turn)
 						tilesAddedFound++;
+					else hasConnetcion=true;
 				} else break;
 				i++;
 			}
@@ -261,6 +264,7 @@ public class Board {
 				if(!board[i][y].isEmpty()){
 					if(board[i][y].getTop().getAge()==turn)
 						tilesAddedFound++;
+					else hasConnetcion=true;
 				} else break;
 				i--;
 			}
@@ -271,6 +275,7 @@ public class Board {
 				if(!board[i][y].isEmpty()){
 					if(board[i][y].getTop().getAge()==turn)
 						tilesAddedFound++;
+					else hasConnetcion=true;
 				} else break;
 				i++;
 			}
@@ -279,11 +284,12 @@ public class Board {
 			return false;
 		if(tilesAddedFound==0&&tilesLeftToCheck>0)
 			return false;
-		return true;
+		if(isFirstWord) return true;
+		return hasConnetcion;
 	}
 
 	public boolean hasNeighbours(int x,int y){
-		return (hasTile(x-1, y)||hasTile(x+1, y)
+		return (hasTile(x-1, y)|| hasTile(x+1, y)
 				||hasTile(x, y-1)||hasTile(x, y+1));
 	}
 	

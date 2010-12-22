@@ -414,6 +414,8 @@ public class BoardView extends View{
 				if(b.hasTile(i, j)){
 					if(selectedBoardTileX==i&&selectedBoardTileY==j)
 						tileFillPaint.setColor(Color.YELLOW);
+					else if(b.getTile(i, j).getAge()==ge.getBoard().getTurn())
+						tileFillPaint.setARGB(255, 160, 160, 200);
 					left=dimensions.getPadding()+j*dimensions.getCellSize();
 					right=left+dimensions.getCellSize();
 					top=dimensions.getScoreHeight()+i*dimensions.getCellSize();

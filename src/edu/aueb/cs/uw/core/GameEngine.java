@@ -47,7 +47,7 @@ public class GameEngine {
 			if(players[getPlayerTurn()].getTray().getNumUnusedTiles()==0)
 				return true;
 		}
-		if(gaveUpTurn==gc.getNumPlayers())
+		if(gaveUpTurn==gc.getNumPlayers()+1)
 			return true;
 		return false;
 	}
@@ -61,18 +61,20 @@ public class GameEngine {
 	}
 	
 	public Player declareWinner(){
-		int highestScore=0;
+		int highestScore=-36;
 		Player highestPlayer=null;
 		for(int i=0;i<players.length;i++){
 			if(players[i].getScore()>highestScore){
 				highestScore=players[i].getScore();
 				highestPlayer=players[i];
-			}
+			} else if(players[i].getScore()==highestScore)
+				highestPlayer=null;
 		}
 		return highestPlayer;
 	}
 	
 	public void giveUpTurn(){
+		undoAll();
 		gaveUpTurn++;
 		nextRound();
 	}
@@ -115,5 +117,14 @@ public class GameEngine {
 
 	public int getPlayerTurn() {
 		return playerTurn;
+	}
+
+	public void undoAll() {
+		Tile [] trayTiles = board.undoAll();
+		Player p=players[getPlayerTurn()];
+		Tray t= p.getTray();
+		for(int i=0;i<trayTiles.length;i++){
+			t.addTile(trayTiles[i]);
+		}
 	}
 }

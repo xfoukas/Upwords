@@ -75,34 +75,38 @@ public class Board {
 		int orientation;
 		int size=tilesAdded.size();
 		AddedTile t;
-		if(size==1){
+		if(size==0) {
+			score=0;
+		}
+		else if(size==1){
 			score+=getScoreHorizontal(tilesAdded.getFirst().getX(),
 					tilesAdded.getFirst().getY());
 			score+=getScoreVertical(tilesAdded.getFirst().getX(),
 					tilesAdded.getFirst().getY());
+		} else {
+			t=tilesAdded.getFirst();
+			orientation=findOrientation();
+			switch (orientation) {
+			case COL_ORIENT:
+				score+=getScoreVertical(t.getX(), t.getY());
+				for(AddedTile tile : tilesAdded)
+					score+=getScoreHorizontal(tile.getX(), tile.getY());
+				break;
+			case ROW_ORIENT:
+				score+=getScoreHorizontal(t.getX(), t.getY());
+				for(AddedTile tile : tilesAdded)
+					score+=getScoreVertical(tile.getX(), tile.getY());
+				break;
+			default:
+				break;
+			}
+			if(allLettersUsed())
+				score+=10;	
 		}
-		t=tilesAdded.getFirst();
-		orientation=findOrientation();
-		switch (orientation) {
-		case COL_ORIENT:
-			score+=getScoreVertical(t.getX(), t.getY());
-			for(AddedTile tile : tilesAdded)
-				score+=getScoreHorizontal(tile.getX(), tile.getY());
-			break;
-		case ROW_ORIENT:
-			score+=getScoreHorizontal(t.getX(), t.getY());
-			for(AddedTile tile : tilesAdded)
-				score+=getScoreVertical(tile.getX(), tile.getY());
-			break;
-		default:
-			break;
-		}
-		if(allLettersUsed())
-			score+=10;
 		for(AddedTile tile : tilesAdded){
 			if(TilePool.BONUS_LETTERS.indexOf(tile.getTile().getLetter())!=-1)
-					score+=2;
-		}
+				score+=2;
+		}	
 		return score;
 	}
 	
@@ -139,7 +143,7 @@ public class Board {
 			else
 				score++;
 			i++;
-		} while(board[x][i].isEmpty());
+		} while(!board[x][i].isEmpty());
 		if(isFirstLevel)
 			score*=2;
 		return score;
@@ -163,7 +167,7 @@ public class Board {
 			else
 				score++;
 			i++;
-		} while(board[i][y].isEmpty());
+		} while(!board[i][y].isEmpty());
 		if(isFirstLevel)
 			score*=2;
 		return score;
@@ -263,11 +267,16 @@ public class Board {
 				||(x==topLeft+1&&y==topLeft+1);
 	}
 	
-	public void undoAll(){
+	public Tile [] undoAll(){
+		Tile trayTiles []=new Tile[tilesAdded.size()];
+		int i=0;
 		for(AddedTile t : tilesAdded){
 			t.getTile().setAge(0);
-			board[t.getX()][t.getY()].deleteTop();
+			trayTiles[i]=board[t.getX()][t.getY()].deleteTop();
+			i++;
 		}
+		tilesAdded.clear();
+		return trayTiles;
 	}
 	
 	public Tile getTile(int i, int j){

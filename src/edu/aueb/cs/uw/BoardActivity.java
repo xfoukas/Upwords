@@ -9,6 +9,7 @@ import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import edu.aueb.cs.uw.core.GameConfigs;
 import edu.aueb.cs.uw.core.GameEngine;
+import edu.aueb.cs.uw.core.Player;
 
 public class BoardActivity extends Activity 
 {
@@ -53,6 +54,43 @@ public class BoardActivity extends Activity
         	
         });
         
+        
+        ImageButton GiveUpTurn = (ImageButton)findViewById(R.id.giveturn_button_horizontal);
+        GiveUpTurn.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				ge.giveUpTurn();
+				if(ge.isEndOfGame()){
+					String message;
+					Player p=ge.endGame();
+					if(p==null)
+						message="The game is a draw";
+					else
+						message="Player "+p.getNickname()+" wins!!!";
+					AlertDialog.Builder builder = new AlertDialog.Builder(BoardActivity.this);
+	        		builder.setMessage(message)
+	        		       .setCancelable(false)
+	        		       .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+	        		           public void onClick(DialogInterface dialog, int id) {
+	        		                BoardActivity.this.finish();
+	        		           }
+	        		       });
+	        		AlertDialog alert = builder.create();
+	        		alert.show();
+				}
+			}
+		});
+        
+        
+        ImageButton UndoAll = (ImageButton)findViewById(R.id.undo_button_horizontal);
+        UndoAll.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				ge.undoAll();
+			}
+		});
     }
     
 }

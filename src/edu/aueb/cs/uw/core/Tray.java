@@ -20,7 +20,7 @@ public class Tray {
 
 	public int fillTray(){
 		Tile t;
-		int neededTiles=TRAY_SIZE-numOfTiles;
+		int neededTiles=TRAY_SIZE-numUnusedTiles;
 		int addedTiles=0;
 		for(int i=0;i<neededTiles;i++){
 			if(pool.getNumOfTiles()>0){

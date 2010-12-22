@@ -91,6 +91,34 @@ public class BoardActivity extends Activity
 				ge.undoAll();
 			}
 		});
+        
+        
+        ImageButton EndTurn = (ImageButton)findViewById(R.id.endturn_button_horizontal);
+        EndTurn.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				ge.nextRound();
+				if(ge.isEndOfGame()){
+					String message;
+					Player p=ge.endGame();
+					if(p==null)
+						message="The game is a draw";
+					else
+						message="Player "+p.getNickname()+" wins!!!";
+					AlertDialog.Builder builder = new AlertDialog.Builder(BoardActivity.this);
+	        		builder.setMessage(message)
+	        		       .setCancelable(false)
+	        		       .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+	        		           public void onClick(DialogInterface dialog, int id) {
+	        		                BoardActivity.this.finish();
+	        		           }
+	        		       });
+	        		AlertDialog alert = builder.create();
+	        		alert.show();
+				}
+			}
+		});
     }
     
 }

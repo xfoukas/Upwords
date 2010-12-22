@@ -33,6 +33,7 @@ public class TilePool {
 			}
 			else p -= entry.getValue();
 		}
+		numOfTiles--;
 		return null;
 	}
 	
@@ -42,7 +43,7 @@ public class TilePool {
 	}
 
 	public boolean hasMoreTiles(){
-		return (calculateNumOfTiles()>0)?true:false;
+		return (numOfTiles>0)?true:false;
 	}
 	
 	public void setNumOfTiles(int numOfTiles) {

@@ -47,7 +47,7 @@ public class GameEngine {
 			if(players[getPlayerTurn()].getTray().getNumUnusedTiles()==0)
 				return true;
 		}
-		if(gaveUpTurn==gc.getNumPlayers()+1)
+		if(gaveUpTurn==gc.getNumPlayers())
 			return true;
 		return false;
 	}

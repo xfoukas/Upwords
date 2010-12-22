@@ -135,6 +135,8 @@ public class BoardActivity extends Activity
         		alert.show();	
 			}
 		});
+        
+        
     }
     
 }

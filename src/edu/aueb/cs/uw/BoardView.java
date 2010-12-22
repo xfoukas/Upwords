@@ -272,10 +272,14 @@ public class BoardView extends View{
 		drawScore(canvas);
 		drawTray(canvas);
 		drawMovingTile(canvas);
-		if(ge.getBoard().isValidPlacement())
+		if(ge.getBoard().isValidPlacement()) {
 			endTurn.setClickable(true);
-		else
+			endTurn.setImageResource(R.drawable.end_turn_available);
+		}
+		else {
 			endTurn.setClickable(false);
+			endTurn.setImageResource(R.drawable.end_turn);
+		}
 	}
 	
 	private void drawMovingTile(Canvas canvas){

@@ -11,6 +11,7 @@ import android.graphics.Paint.Style;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageButton;
 import edu.aueb.cs.uw.core.Board;
 import edu.aueb.cs.uw.core.GameEngine;
 import edu.aueb.cs.uw.core.Tile;
@@ -50,6 +51,7 @@ public class BoardView extends View{
 	private GameEngine ge;
 	private Rect [] tilesTray;
 	private Tile movingTile;
+	private ImageButton endTurn;
 	
 
 	public BoardView( Context context, AttributeSet attrs ) 
@@ -127,7 +129,8 @@ public class BoardView extends View{
 						if(!boardTileIsMoved) {
 							t.addTempRemovedTile(movingTile, selectedTileNum);
 							t.useTile(selectedTileNum);
-						}
+						} else
+							ge.getBoard().removeFromList(movingTile, selectedBoardTileX, selectedBoardTileY);
 					}
 					else {
 						if(boardTileIsMoved)
@@ -136,7 +139,7 @@ public class BoardView extends View{
 							t.addTempRemovedTile(movingTile, selectedTileNum);
 					}
 				} else if(getArea(x, y)==TRAY_AREA) {
-					if(boardTileIsMoved)
+					if(boardTileIsMoved) 
 						t.addTile(movingTile);
 					else if(selectedTileNum!=-1)
 						t.addTempRemovedTile(movingTile, selectedTileNum); 
@@ -270,6 +273,10 @@ public class BoardView extends View{
 		drawScore(canvas);
 		drawTray(canvas);
 		drawMovingTile(canvas);
+		if(ge.getBoard().isValidPlacement())
+			endTurn.setClickable(true);
+		else
+			endTurn.setClickable(false);
 	}
 	
 	private void drawMovingTile(Canvas canvas){
@@ -471,6 +478,14 @@ public class BoardView extends View{
 
 	public void setGameEngine(GameEngine ge) {
 		this.ge=ge;
+	}
+
+	public void setEndTurn(ImageButton endTurn) {
+		this.endTurn = endTurn;
+	}
+
+	public ImageButton getEndTurn() {
+		return endTurn;
 	}	
 	
 }

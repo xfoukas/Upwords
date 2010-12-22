@@ -94,6 +94,7 @@ public class BoardActivity extends Activity
         
         
         ImageButton EndTurn = (ImageButton)findViewById(R.id.endturn_button_horizontal);
+        bv.setEndTurn(EndTurn);
         EndTurn.setOnClickListener(new OnClickListener() {
 			
 			@Override

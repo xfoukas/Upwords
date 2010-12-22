@@ -41,6 +41,21 @@ public class Board {
 		public Tile getTile() {
 			return tile;
 		}
+		
+		@Override
+		public boolean equals(Object o) {
+			AddedTile t;
+			if(o==null)
+				return false;
+			if(this==o)
+				return true;
+			if(!(o instanceof AddedTile))
+				return false;
+			t=(AddedTile)o;
+			return this.x==t.getX()
+				&&this.y==t.getY()
+				&&this.tile==t.getTile();	
+		}
 	}
 	
 	public Board(){
@@ -71,6 +86,7 @@ public class Board {
 	}
 	
 	public int getScore(){
+		/*TODO must fix*/
 		int score=0;
 		int orientation;
 		int size=tilesAdded.size();
@@ -185,6 +201,8 @@ public class Board {
 		if(size==0)
 			return false;
 		if(isFirstWord){
+			if(size==1)
+				return false;
 			for(AddedTile t : tilesAdded){
 				if(isCentralCell(t.getX(), t.getY()))
 					hasCentralCell=true;
@@ -192,6 +210,11 @@ public class Board {
 					return false;
 			}
 			return hasCentralCell;
+		}
+		if(size==1){
+			if(hasNeighbours(tilesAdded.getFirst().getX(), tilesAdded.getFirst().getX()))
+				return true;
+			return false;
 		}
 		for(AddedTile t : tilesAdded){
 			if(!isValidTilePlacement(t))
@@ -203,47 +226,59 @@ public class Board {
 	public boolean isValidTilePlacement(AddedTile tile){
 		int numTiles=tilesAdded.size();
 		int tilesLeftToCheck=numTiles-1;
-		boolean continuousTiles=true;
+		int x=tile.getX();
+		int y=tile.getY();
 		int tilesAddedFound=0;
-		/*Check row*/
-		for(int i=0;i<BOARD_SIZE;i++){
-			if(i==tile.getY()) continue; //Do not look at this tile
-			//Has a tile?
-			if(board[tile.getX()][i].isEmpty()){
-				continuousTiles=false;
-				continue;
+		/*Check row to the left of the tile
+		 * and then to the right
+		 */
+		if(y>0){
+			int i=y-1;
+			while(i>=0){
+				if(!board[x][i].isEmpty()){
+					if(board[x][i].getTop().getAge()==turn)
+						tilesAddedFound++;
+				} else break;
+				i--;
 			}
-			//if added on this round
-			if(board[tile.getX()][i].getTop().getAge()==turn) {
-				if(!continuousTiles)
-					tilesAddedFound=0;
-				tilesAddedFound++;
-			}
-			continuousTiles=true;
 		}
-		if(tilesAddedFound==tilesLeftToCheck)
-			return true;
+		if(y<BOARD_SIZE-1){
+			int i=y+1;
+			while(i<BOARD_SIZE){
+				if(!board[x][i].isEmpty()){
+					if(board[x][i].getTop().getAge()==turn)
+						tilesAddedFound++;
+				} else break;
+				i++;
+			}
+		}
+		if(tilesAddedFound>0&&tilesAddedFound!=tilesLeftToCheck)
+			return false;
 		tilesAddedFound=0;
-		continuousTiles=true;
-		//Do the same for column
-		for(int i=0;i<BOARD_SIZE;i++){
-			if(i==tile.getX()) continue; //Do not look at this tile
-			//Has a tile?
-			if(board[i][tile.getY()].isEmpty()){
-				continuousTiles=false;
-				continue;
+		/*Do the same for column*/
+		if(x>0){
+			int i=x-1;
+			while(i>=0){
+				if(!board[i][y].isEmpty()){
+					if(board[i][y].getTop().getAge()==turn)
+						tilesAddedFound++;
+				} else break;
+				i--;
 			}
-			//if added on this round
-			if(board[i][tile.getY()].getTop().getAge()==turn) {
-				if(!continuousTiles)
-					tilesAddedFound=0;
-				tilesAddedFound++;
-			}
-			continuousTiles=true;
 		}
-		if(tilesAddedFound==tilesLeftToCheck)
-			return true;
-		return false;
+		if(x<BOARD_SIZE-1){
+			int i=x+1;
+			while(i<BOARD_SIZE){
+				if(!board[i][y].isEmpty()){
+					if(board[i][y].getTop().getAge()==turn)
+						tilesAddedFound++;
+				} else break;
+				i++;
+			}
+		}
+		if(tilesAddedFound>0&&tilesAddedFound!=tilesLeftToCheck)
+			return false;
+		return true;
 	}
 
 	public boolean hasNeighbours(int x,int y){
@@ -260,7 +295,7 @@ public class Board {
 	}
 	
 	private boolean isCentralCell(int x,int y){
-		int topLeft=(BOARD_SIZE/2)-2;
+		int topLeft=(BOARD_SIZE/2)-1;
 		return (x==topLeft&&y==topLeft)
 				||(x==topLeft&&y==topLeft+1)
 				||(x==topLeft+1&&y==topLeft)
@@ -301,19 +336,32 @@ public class Board {
 	
 	public Tile removeTile(int x,int y){
 		TileStack ts=board[x][y];
-		return ts.deleteTop();
+		Tile t=ts.deleteTop();
+		tilesAdded.remove(t);
+		return t;
 //		return ts.removeTop();
+	}
+	
+	public boolean removeFromList(Tile t,int x,int y){
+		AddedTile tile=new AddedTile(x, y, t);
+		return tilesAdded.remove(tile);
 	}
 	
 	public boolean removeTile(Tile tile){
 		TileStack ts;
+		boolean removed=false;
 		for(AddedTile t : tilesAdded){
 			if(tile.equals(t.getTile())){
 				ts=board[t.getX()][t.getY()];
-				return ts.removeTile(tile);
+				if (ts.removeTile(tile)) {
+					removed=true;
+					break;
+				}
 			}	
 		}
-		return false;
+		if(removed)
+			tilesAdded.remove(tile);
+		return removed;
 	}
 	
 	public boolean canAddTile(int x,int y,Tile tile){

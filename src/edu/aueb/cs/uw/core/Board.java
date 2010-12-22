@@ -54,7 +54,7 @@ public class Board {
 			t=(AddedTile)o;
 			return this.x==t.getX()
 				&&this.y==t.getY()
-				&&this.tile==t.getTile();	
+				&&this.tile.equals(t.getTile());	
 		}
 	}
 	
@@ -254,7 +254,6 @@ public class Board {
 		}
 		if(tilesAddedFound>0&&tilesAddedFound!=tilesLeftToCheck)
 			return false;
-		tilesAddedFound=0;
 		/*Do the same for column*/
 		if(x>0){
 			int i=x-1;
@@ -277,6 +276,8 @@ public class Board {
 			}
 		}
 		if(tilesAddedFound>0&&tilesAddedFound!=tilesLeftToCheck)
+			return false;
+		if(tilesAddedFound==0&&tilesLeftToCheck>0)
 			return false;
 		return true;
 	}
@@ -337,16 +338,22 @@ public class Board {
 	public Tile removeTile(int x,int y){
 		TileStack ts=board[x][y];
 		Tile t=ts.deleteTop();
-		tilesAdded.remove(t);
+		AddedTile tl=new AddedTile(x, y, t);;
+		for(AddedTile at : tilesAdded){
+			if(at.equals(tl)) {
+				tl=at;
+				break;
+			}
+		}
+		tilesAdded.remove(tl);
 		return t;
-//		return ts.removeTop();
 	}
 	
-	public boolean removeFromList(Tile t,int x,int y){
+	/*public boolean removeFromList(Tile t,int x,int y){
 		AddedTile tile=new AddedTile(x, y, t);
 		return tilesAdded.remove(tile);
 	}
-	
+	*/
 	public boolean removeTile(Tile tile){
 		TileStack ts;
 		boolean removed=false;

@@ -129,8 +129,7 @@ public class BoardView extends View{
 						if(!boardTileIsMoved) {
 							t.addTempRemovedTile(movingTile, selectedTileNum);
 							t.useTile(selectedTileNum);
-						} else
-							ge.getBoard().removeFromList(movingTile, selectedBoardTileX, selectedBoardTileY);
+						}
 					}
 					else {
 						if(boardTileIsMoved)

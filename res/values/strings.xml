@@ -6,4 +6,7 @@
 <string name="about">About</string>
 <string name="exit">Exit</string>
 <string name="quick_start">Quick Start</string>
+<string name="ok">OK</string>
+<string name="switch_message">Please choose the tile to change</string>
+<string name="cancel">Cancel</string>
 </resources>

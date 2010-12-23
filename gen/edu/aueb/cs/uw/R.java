@@ -24,6 +24,7 @@ public final class R {
     public static final class id {
         public static final int about=0x7f06001f;
         public static final int board_view=0x7f060000;
+        public static final int cancel_popup=0x7f060023;
         public static final int cb1=0x7f060008;
         public static final int cb2=0x7f06000d;
         public static final int cb3=0x7f060012;
@@ -37,6 +38,7 @@ public final class R {
         public static final int exit_button_horizontal=0x7f060002;
         public static final int giveturn_button_horizontal=0x7f060003;
         public static final int new_game=0x7f06001d;
+        public static final int poptext=0x7f060022;
         public static final int quick_start=0x7f06001e;
         public static final int rl1=0x7f060007;
         public static final int rl2=0x7f06000c;
@@ -53,6 +55,7 @@ public final class R {
         public static final int tv4=0x7f060018;
         public static final int tv4b=0x7f06001a;
         public static final int undo_button_horizontal=0x7f060004;
+        public static final int widget=0x7f060021;
         public static final int widget0=0x7f06001b;
         public static final int widget35=0x7f06001c;
     }
@@ -60,16 +63,21 @@ public final class R {
         public static final int about=0x7f030000;
         public static final int board=0x7f030001;
         public static final int configs=0x7f030002;
-        public static final int main=0x7f030003;
-        public static final int menu=0x7f030004;
+        public static final int customshape=0x7f030003;
+        public static final int main=0x7f030004;
+        public static final int menu=0x7f030005;
+        public static final int popup_message=0x7f030006;
     }
     public static final class string {
         public static final int about=0x7f040003;
         public static final int app_name=0x7f040001;
+        public static final int cancel=0x7f040008;
         public static final int exit=0x7f040004;
         public static final int hello=0x7f040000;
         public static final int new_game=0x7f040002;
+        public static final int ok=0x7f040006;
         public static final int quick_start=0x7f040005;
+        public static final int switch_message=0x7f040007;
     }
     public static final class style {
         public static final int toolbar_button=0x7f050000;

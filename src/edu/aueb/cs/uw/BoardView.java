@@ -12,6 +12,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.PopupWindow;
 import edu.aueb.cs.uw.core.Board;
 import edu.aueb.cs.uw.core.GameEngine;
 import edu.aueb.cs.uw.core.Tile;
@@ -44,6 +45,7 @@ public class BoardView extends View{
 	private boolean isInitialized;
 	private boolean tileIsMoved;
 	private boolean boardTileIsMoved;
+	private boolean switchMode;
 	private int selectedTileNum;
 	private int selectedBoardTileX;
 	private int selectedBoardTileY;
@@ -52,6 +54,7 @@ public class BoardView extends View{
 	private Rect [] tilesTray;
 	private Tile movingTile;
 	private ImageButton endTurn;
+	private PopupWindow pw;
 	
 
 	public BoardView( Context context, AttributeSet attrs ) 
@@ -69,6 +72,7 @@ public class BoardView extends View{
 		invalidate();
 	}
 
+	
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		int evt=event.getAction();
@@ -81,6 +85,12 @@ public class BoardView extends View{
 			switch(area){
 			case TRAY_AREA:
 				handleTrayClick(x,y);
+				if(switchMode&&selectedTileNum!=-1){
+					switchMode=false;
+					pw.dismiss();
+					ge.makeSwitch(selectedTileNum);
+					selectedTileNum=-1;
+				}
 				break;
 			case BOARD_AREA:
 				handleBoardClick(x,y);
@@ -160,19 +170,19 @@ public class BoardView extends View{
 	}
 	
 	private int getMovingTileXPos(int x){
-		if(x<dimensions.getCellSize()/2)
-			return dimensions.getCellSize()/2;
-		else if(x>dimensions.getTotalWidth()-dimensions.getCellSize()/2)
-			return dimensions.getTotalWidth()-dimensions.getCellSize()/2;
+		if(x<getDimensions().getCellSize()/2)
+			return getDimensions().getCellSize()/2;
+		else if(x>getDimensions().getTotalWidth()-getDimensions().getCellSize()/2)
+			return getDimensions().getTotalWidth()-getDimensions().getCellSize()/2;
 		else 
 			return x;
 	}
 	
 	private int getMovingTileYPos(int y){
-		if(y<dimensions.getCellSize()/2)
-			return dimensions.getCellSize()/2;
-		else if(y>dimensions.getTotalHeight()-dimensions.getCellSize()/2)
-			return dimensions.getTotalHeight()-dimensions.getCellSize()/2;
+		if(y<getDimensions().getCellSize()/2)
+			return getDimensions().getCellSize()/2;
+		else if(y>getDimensions().getTotalHeight()-getDimensions().getCellSize()/2)
+			return getDimensions().getTotalHeight()-getDimensions().getCellSize()/2;
 		else
 			return y;
 	}
@@ -248,10 +258,11 @@ public class BoardView extends View{
 				curWidth = 2;
 			}
 			tileStrokePaint.setStrokeWidth(curWidth);
-			dimensions=calculateDimensions(width, height);
+			setDimensions(calculateDimensions(width, height));
 			isInitialized=true;
 			tileIsMoved=false;
 			boardTileIsMoved=false;
+			switchMode=false;
 			selectedTileNum=-1;
 			selectedBoardTileX=-1;
 			selectedBoardTileY=-1;
@@ -261,16 +272,16 @@ public class BoardView extends View{
 	}
 	
 	private void drawTemplate(Canvas canvas){
-		Rect bRect=new Rect(0,dimensions.getScoreHeight(),dimensions.getTotalWidth(),dimensions.getScoreHeight()+dimensions.getBoardheight());
+		Rect bRect=new Rect(0,getDimensions().getScoreHeight(),getDimensions().getTotalWidth(),getDimensions().getScoreHeight()+getDimensions().getBoardheight());
 		canvas.drawRect(bRect, fillBoardPaint);
-		Rect scRect=new Rect(0,0, dimensions.getTotalWidth(),dimensions.getTotalHeight()-dimensions.getBoardheight()-dimensions.getTrayHeight());
+		Rect scRect=new Rect(0,0, getDimensions().getTotalWidth(),getDimensions().getTotalHeight()-getDimensions().getBoardheight()-getDimensions().getTrayHeight());
 		canvas.drawRect(scRect, fillScorePaint);
-		Rect tRect=new Rect(0,dimensions.getScoreHeight()+dimensions.getBoardheight(), dimensions.getTotalWidth(),dimensions.getTotalHeight());
+		Rect tRect=new Rect(0,getDimensions().getScoreHeight()+getDimensions().getBoardheight(), getDimensions().getTotalWidth(),getDimensions().getTotalHeight());
 		canvas.drawRect(tRect, fillTrayPaint);
 		canvas.drawRect(scRect, fillScorePaint);
+		drawTray(canvas);
 		drawBoard(canvas);
 		drawScore(canvas);
-		drawTray(canvas);
 		drawMovingTile(canvas);
 		if(ge.getBoard().isValidPlacement()) {
 			endTurn.setClickable(true);
@@ -285,8 +296,8 @@ public class BoardView extends View{
 	private void drawMovingTile(Canvas canvas){
 		if(tileIsMoved){
 			tileTextPaint.setTextSize(defaultFontSize*2);
-			drawTile(canvas, movingTileX-dimensions.getCellSize()/2, movingTileY-dimensions.getCellSize()/2, 
-					movingTileX+dimensions.getCellSize()/2, movingTileY+dimensions.getCellSize()/2,
+			drawTile(canvas, movingTileX-getDimensions().getCellSize()/2, movingTileY-getDimensions().getCellSize()/2, 
+					movingTileX+getDimensions().getCellSize()/2, movingTileY+getDimensions().getCellSize()/2,
 					Character.toString(movingTile.getLetter()));
 			if(getArea(movingTileX, movingTileY)==BOARD_AREA){
 				int i=findCellRow(movingTileY);
@@ -296,10 +307,10 @@ public class BoardView extends View{
 					underneathCellPaint.setColor(Color.GREEN);
 				else
 					underneathCellPaint.setColor(Color.RED);
-				int left=dimensions.getPadding()+j*dimensions.getCellSize();
-				int right=left+dimensions.getCellSize();
-				int top=dimensions.getScoreHeight()+i*dimensions.getCellSize();
-				int bottom=top+dimensions.getCellSize();
+				int left=getDimensions().getPadding()+j*getDimensions().getCellSize();
+				int right=left+getDimensions().getCellSize();
+				int top=getDimensions().getScoreHeight()+i*getDimensions().getCellSize();
+				int bottom=top+getDimensions().getCellSize();
 				Rect underRect=new Rect(left, top, right, bottom);
 				canvas.drawRect(underRect, underneathCellPaint);
 			}
@@ -310,8 +321,8 @@ public class BoardView extends View{
 	private int findCellRow(int y){
 		/*Needs y coordinate to find row*/
 		for(int i=0;i<BOARD_SIZE;i++){
-			if(y>=dimensions.getScoreHeight()+i*dimensions.getCellSize()&&
-					y<=dimensions.getScoreHeight()+i*dimensions.getCellSize()+dimensions.getCellSize())
+			if(y>=getDimensions().getScoreHeight()+i*getDimensions().getCellSize()&&
+					y<=getDimensions().getScoreHeight()+i*getDimensions().getCellSize()+getDimensions().getCellSize())
 				return i;
 		}
 		return 0;
@@ -320,8 +331,8 @@ public class BoardView extends View{
 	private int findCellCol(int x){
 		/*Needs x coordinate to find column*/
 		for(int i=0;i<BOARD_SIZE;i++){
-			if(x>=dimensions.getPadding()+i*dimensions.getCellSize()&&
-					x<=dimensions.getPadding()+i*dimensions.getCellSize()+dimensions.getCellSize())
+			if(x>=getDimensions().getPadding()+i*getDimensions().getCellSize()&&
+					x<=getDimensions().getPadding()+i*getDimensions().getCellSize()+getDimensions().getCellSize())
 				return i;
 		}
 		return 0;
@@ -334,8 +345,8 @@ public class BoardView extends View{
 		int turn=ge.getPlayerTurn();
 		int NumOfPlayers=ge.getNumPlayers();
 		
-		int maxHeight=dimensions.getScoreHeight();
-		float scoreWidth=dimensions.getTotalWidth()/NumOfPlayers;
+		int maxHeight=getDimensions().getScoreHeight();
+		float scoreWidth=getDimensions().getTotalWidth()/NumOfPlayers;
 		
 		scorePaint.setTextAlign(Align.CENTER);
 		
@@ -356,19 +367,19 @@ public class BoardView extends View{
 		
 		int turn=ge.getPlayerTurn();
 		Tray t=ge.getPlayer(turn).getTray();
-		int tileSize=dimensions.getTotalWidth()/Tray.TRAY_SIZE;
-		if(tileSize>=dimensions.getTrayHeight())
-			tileSize=4*dimensions.getTrayHeight()/5;
-		int bot_border=(dimensions.getTrayHeight()-tileSize)/2;
-		int space=(dimensions.getTotalWidth()-(tileSize*Tray.TRAY_SIZE))/(Tray.TRAY_SIZE+1);
+		int tileSize=getDimensions().getTotalWidth()/Tray.TRAY_SIZE;
+		if(tileSize>=getDimensions().getTrayHeight())
+			tileSize=4*getDimensions().getTrayHeight()/5;
+		int bot_border=(getDimensions().getTrayHeight()-tileSize)/2;
+		int space=(getDimensions().getTotalWidth()-(tileSize*Tray.TRAY_SIZE))/(Tray.TRAY_SIZE+1);
 		tilesTray=new Rect[t.getNumUnusedTiles()]; 
 		for(int i=0;i<t.getNumUnusedTiles();i++){
 			if(t.getTile(i)==null) continue;
 			if(selectedTileNum==i)
 				tileFillPaint.setColor(Color.YELLOW);
 			tileTextPaint.setTextSize(defaultFontSize*3);
-			tilesTray[i]=drawTile(canvas, i*tileSize+(i+1)*space, dimensions.getTotalHeight()-tileSize-bot_border, 
-					i*tileSize+(i+1)*space+tileSize, dimensions.getTotalHeight()-bot_border, t.getTileLetter(i));
+			tilesTray[i]=drawTile(canvas, i*tileSize+(i+1)*space, getDimensions().getTotalHeight()-tileSize-bot_border, 
+					i*tileSize+(i+1)*space+tileSize, getDimensions().getTotalHeight()-bot_border, t.getTileLetter(i));
 			tileFillPaint.setColor(Color.WHITE);
 		}
 	}
@@ -384,29 +395,29 @@ public class BoardView extends View{
 	
 	private void drawBoard(Canvas canvas)
 	{
-		int bHeight=dimensions.getBoardheight();
+		int bHeight=getDimensions().getBoardheight();
 		
 		int bWidth=bHeight;
-		int sHeight=dimensions.getScoreHeight();
-		int padding=dimensions.getPadding();
+		int sHeight=getDimensions().getScoreHeight();
+		int padding=getDimensions().getPadding();
 		
-		int left=dimensions.getPadding()+(BOARD_SIZE/2-1)*dimensions.getCellSize();
-		int top=dimensions.getScoreHeight()+(BOARD_SIZE/2-1)*dimensions.getCellSize();
-		int bottom= 2*dimensions.getCellSize()+top;
-		int right= 2*dimensions.getCellSize()+left;
+		int left=getDimensions().getPadding()+(BOARD_SIZE/2-1)*getDimensions().getCellSize();
+		int top=getDimensions().getScoreHeight()+(BOARD_SIZE/2-1)*getDimensions().getCellSize();
+		int bottom= 2*getDimensions().getCellSize()+top;
+		int right= 2*getDimensions().getCellSize()+left;
 		
 		Rect centralRect=new Rect(left, top, right, bottom);
 		canvas.drawRect(centralRect, centralSquarePaint);
 		
 		for(int i=0;i<11;i++)
 		{
-			int x=i*dimensions.getCellSize();
+			int x=i*getDimensions().getCellSize();
 			canvas.drawLine(padding+x,sHeight,padding+x,sHeight+bHeight,strokePaint);
 		}
 		
 		for(int i=0;i<11;i++)
 		{
-			int y=i*dimensions.getCellSize();
+			int y=i*getDimensions().getCellSize();
 			canvas.drawLine(padding,sHeight+y,padding+bWidth,sHeight+y,strokePaint);
 		}
 		
@@ -420,10 +431,10 @@ public class BoardView extends View{
 						tileFillPaint.setColor(Color.YELLOW);
 					else if(b.getTile(i, j).getAge()==ge.getBoard().getTurn())
 						tileFillPaint.setARGB(255, 160, 160, 200);
-					left=dimensions.getPadding()+j*dimensions.getCellSize();
-					right=left+dimensions.getCellSize();
-					top=dimensions.getScoreHeight()+i*dimensions.getCellSize();
-					bottom=top+dimensions.getCellSize();
+					left=getDimensions().getPadding()+j*getDimensions().getCellSize();
+					right=left+getDimensions().getCellSize();
+					top=getDimensions().getScoreHeight()+i*getDimensions().getCellSize();
+					bottom=top+getDimensions().getCellSize();
 					tileTextPaint.setTextSize(2*defaultFontSize);
 					drawTile(canvas,left , top, right, bottom, Character.toString(ts[i][j].getTop().getLetter()));
 					tileFillPaint.setColor(Color.WHITE);
@@ -434,10 +445,10 @@ public class BoardView extends View{
 	}
 	
 	private int getArea(int x,int y){
-		if(y<=dimensions.getScoreHeight())
+		if(y<=getDimensions().getScoreHeight())
 			return SCORE_AREA;
-		else if(y>dimensions.getScoreHeight()&&
-				y<=dimensions.getScoreHeight()+dimensions.getBoardheight())
+		else if(y>getDimensions().getScoreHeight()&&
+				y<=getDimensions().getScoreHeight()+getDimensions().getBoardheight())
 			return BOARD_AREA;
 		else return TRAY_AREA;
 	}
@@ -491,6 +502,25 @@ public class BoardView extends View{
 
 	public ImageButton getEndTurn() {
 		return endTurn;
+	}
+
+	public void setSwitchMode(boolean switchMode) {
+		this.switchMode = switchMode;
+	}
+
+	public boolean isSwitchMode() {
+		return switchMode;
+	}
+
+	public void setDimensions(Dimensions dimensions) {
+		this.dimensions = dimensions;
+	}
+
+	public Dimensions getDimensions() {
+		return dimensions;
 	}	
 	
+	public void setPopupWindow(PopupWindow pw){
+		this.pw=pw;
+	}
 }

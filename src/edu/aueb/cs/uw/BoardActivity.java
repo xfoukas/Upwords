@@ -2,11 +2,17 @@ package edu.aueb.cs.uw;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.PopupWindow;
 import edu.aueb.cs.uw.core.GameConfigs;
 import edu.aueb.cs.uw.core.GameEngine;
 import edu.aueb.cs.uw.core.Player;
@@ -16,6 +22,7 @@ public class BoardActivity extends Activity
 	private GameEngine ge;
 	private GameConfigs gc;
 	private BoardView bv;	
+	private PopupWindow popUp;
     
     @Override
     public void onCreate(Bundle savedInstanceState) 
@@ -135,6 +142,33 @@ public class BoardActivity extends Activity
         		alert.show();	
 			}
 		});
+        
+        ImageButton switchTile = (ImageButton)findViewById(R.id.switch_button_horizontal);
+        switchTile.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				bv.setSwitchMode(true);
+				Dimensions dims=bv.getDimensions();
+				LayoutInflater inflater=(LayoutInflater)BoardActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				View pview=inflater.inflate(R.layout.popup_message, (ViewGroup)findViewById(R.layout.board));
+				popUp =new PopupWindow(pview, 3*dims.getTotalWidth()/4,dims.getBoardheight()/3,false);
+				popUp.setTouchable(true);
+				popUp.setOutsideTouchable(true);
+				
+				Button popupCancel = (Button)pview.findViewById(R.id.cancel_popup);
+		        popupCancel.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						popUp.dismiss();
+					}
+				});
+		        bv.setPopupWindow(popUp);
+		        popUp.showAtLocation(findViewById(R.id.board_view), Gravity.CENTER, 0, 0);
+			}
+		});
+        
         
         
     }

@@ -6,4 +6,14 @@
 <string name="about">About</string>
 <string name="exit">Exit</string>
 <string name="quick_start">Quick Start</string>
+<string-array name="colors_array">
+        <item>White</item>
+        <item>Pink</item>
+        <item>Orange</item>
+        <item>Red</item>
+        <item>Green</item>
+        <item>Blue</item>
+        <item>Black</item>
+        <item>Yellow</item>
+</string-array>
 </resources>

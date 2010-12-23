@@ -272,7 +272,7 @@ public class BoardView extends View {
 			tileTextPaint.setTextAlign(Align.CENTER);
 			stackPanePaint=new Paint();
 			stackPanePaint.setStyle(Paint.Style.FILL);
-			stackPanePaint.setColor(Color.MAGENTA);
+			stackPanePaint.setARGB(255, 99, 120, 130);
 			stackTextPaint=new Paint(Paint.ANTI_ALIAS_FLAG);
 			stackTextPaint.setColor(Color.BLACK);
 			stackTextPaint.setTextAlign(Align.CENTER);
@@ -345,7 +345,7 @@ public class BoardView extends View {
 		stackPanePaint.setColor(Color.BLACK);
 		canvas.drawRect(paneRect, stackPanePaint);
 		stackPanePaint.setStyle(Paint.Style.FILL);
-		stackPanePaint.setColor(Color.MAGENTA);
+		stackPanePaint.setARGB(255, 99, 120, 130);
 		canvas.drawText(stackMessage, topLeftX+width/2, topLeftY+dimensions.getCellSize()/2, stackTextPaint);
 		canvas.drawLine(topLeftX, topLeftY+dimensions.getCellSize()/2+4, topLeftX+width, topLeftY+dimensions.getCellSize()/2+4, stackTextPaint);
 		Iterator<Tile>iter=ts.getStackIterator();

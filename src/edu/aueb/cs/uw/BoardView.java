@@ -8,7 +8,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
-import android.provider.OpenableColumns;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;

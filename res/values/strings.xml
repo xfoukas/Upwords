@@ -6,11 +6,9 @@
 <string name="about">About</string>
 <string name="exit">Exit</string>
 <string name="quick_start">Quick Start</string>
-<<<<<<< HEAD
 <string name="ok">OK</string>
 <string name="switch_message">Please choose the tile to change</string>
 <string name="cancel">Cancel</string>
-=======
 <string-array name="colors_array">
         <item>White</item>
         <item>Pink</item>
@@ -21,5 +19,4 @@
         <item>Black</item>
         <item>Yellow</item>
 </string-array>
->>>>>>> 6fdeeaa5e9ae3258443dda6b877cb8e6127559cf
 </resources>

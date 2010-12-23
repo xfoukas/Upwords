@@ -8,6 +8,9 @@
 package edu.aueb.cs.uw;
 
 public final class R {
+    public static final class array {
+        public static final int colors_array=0x7f050000;
+    }
     public static final class attr {
     }
     public static final class drawable {
@@ -22,42 +25,54 @@ public final class R {
         public static final int upwords=0x7f020008;
     }
     public static final class id {
-        public static final int about=0x7f06001f;
-        public static final int board_view=0x7f060000;
-        public static final int cancel_popup=0x7f060023;
-        public static final int cb1=0x7f060008;
-        public static final int cb2=0x7f06000d;
-        public static final int cb3=0x7f060012;
-        public static final int cb4=0x7f060017;
-        public static final int endturn_button_horizontal=0x7f060006;
-        public static final int et1=0x7f06000a;
-        public static final int et2=0x7f06000f;
-        public static final int et3=0x7f060014;
-        public static final int et4=0x7f060019;
-        public static final int exit=0x7f060020;
-        public static final int exit_button_horizontal=0x7f060002;
-        public static final int giveturn_button_horizontal=0x7f060003;
-        public static final int new_game=0x7f06001d;
-        public static final int poptext=0x7f060022;
-        public static final int quick_start=0x7f06001e;
-        public static final int rl1=0x7f060007;
-        public static final int rl2=0x7f06000c;
-        public static final int rl3=0x7f060011;
-        public static final int rl4=0x7f060016;
-        public static final int switch_button_horizontal=0x7f060005;
-        public static final int toolbar_horizontal=0x7f060001;
-        public static final int tv1=0x7f060009;
-        public static final int tv1b=0x7f06000b;
-        public static final int tv2=0x7f06000e;
-        public static final int tv2b=0x7f060010;
-        public static final int tv3=0x7f060013;
-        public static final int tv3b=0x7f060015;
-        public static final int tv4=0x7f060018;
-        public static final int tv4b=0x7f06001a;
-        public static final int undo_button_horizontal=0x7f060004;
-        public static final int widget=0x7f060021;
-        public static final int widget0=0x7f06001b;
-        public static final int widget35=0x7f06001c;
+        public static final int about=0x7f07002b;
+        public static final int begin_game1=0x7f07000d;
+        public static final int begin_game2=0x7f070015;
+        public static final int begin_game3=0x7f07001d;
+        public static final int begin_game4=0x7f070025;
+        public static final int board_view=0x7f070000;
+        public static final int cancel1=0x7f07000e;
+        public static final int cancel2=0x7f070016;
+        public static final int cancel3=0x7f07001e;
+        public static final int cancel4=0x7f070026;
+        public static final int cancel_popup=0x7f07002f;
+        public static final int cb1=0x7f070008;
+        public static final int cb2=0x7f070010;
+        public static final int cb3=0x7f070018;
+        public static final int cb4=0x7f070020;
+        public static final int endturn_button_horizontal=0x7f070006;
+        public static final int et1=0x7f07000a;
+        public static final int et2=0x7f070012;
+        public static final int et3=0x7f07001a;
+        public static final int et4=0x7f070022;
+        public static final int exit=0x7f07002c;
+        public static final int exit_button_horizontal=0x7f070002;
+        public static final int giveturn_button_horizontal=0x7f070003;
+        public static final int new_game=0x7f070029;
+        public static final int poptext=0x7f07002e;
+        public static final int quick_start=0x7f07002a;
+        public static final int rl1=0x7f070007;
+        public static final int rl2=0x7f07000f;
+        public static final int rl3=0x7f070017;
+        public static final int rl4=0x7f07001f;
+        public static final int spinner1=0x7f07000c;
+        public static final int spinner2=0x7f070014;
+        public static final int spinner3=0x7f07001c;
+        public static final int spinner4=0x7f070024;
+        public static final int switch_button_horizontal=0x7f070005;
+        public static final int toolbar_horizontal=0x7f070001;
+        public static final int tv1=0x7f070009;
+        public static final int tv1b=0x7f07000b;
+        public static final int tv2=0x7f070011;
+        public static final int tv2b=0x7f070013;
+        public static final int tv3=0x7f070019;
+        public static final int tv3b=0x7f07001b;
+        public static final int tv4=0x7f070021;
+        public static final int tv4b=0x7f070023;
+        public static final int undo_button_horizontal=0x7f070004;
+        public static final int widget=0x7f07002d;
+        public static final int widget0=0x7f070027;
+        public static final int widget35=0x7f070028;
     }
     public static final class layout {
         public static final int about=0x7f030000;
@@ -80,6 +95,6 @@ public final class R {
         public static final int switch_message=0x7f040007;
     }
     public static final class style {
-        public static final int toolbar_button=0x7f050000;
+        public static final int toolbar_button=0x7f060000;
     }
 }

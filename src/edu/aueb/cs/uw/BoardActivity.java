@@ -5,14 +5,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -23,7 +19,6 @@ import edu.aueb.cs.uw.core.Player;
 
 public class BoardActivity extends Activity 
 {
-	private final static int SHOW_STACK=1;
 	
 	private GameEngine ge;
 	private GameConfigs gc;

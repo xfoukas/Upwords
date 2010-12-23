@@ -1,6 +1,9 @@
 
 package edu.aueb.cs.uw;
 
+import java.util.Arrays;
+
+import android.util.Log;
 import edu.aueb.cs.uw.core.GameConfigs;
 import android.app.TabActivity;
 import android.content.Intent;
@@ -23,7 +26,7 @@ public class ConfigsActivity extends TabActivity implements OnClickListener ,OnI
 	String [] name,nameForConstructor;
 	int [] color,colorForConstructor;
 	String [] colors={"White","Pink","Orange","Red","Green","Blue","Black","Yellow"};
-	int [] colorCodes={-1,Color.rgb(255,105,180),Color.rgb(255,140,0),-65536,-1671193,-1677696,-16777216,-256};
+	int [] colorCodes={-1,Color.rgb(255,105,180),Color.rgb(255,140,0),-65536,-16711936,-16776961,-16777216,-256};
 	
 	@Override
     public void onCreate(Bundle savedInstanceState)
@@ -33,6 +36,7 @@ public class ConfigsActivity extends TabActivity implements OnClickListener ,OnI
 		    
 		    name=new String [4];
 		    color=new int[4];  
+		    Arrays.fill(color,0);
 		    numOfPlayers=0;
 		    widget=new View [4][7];
 		    
@@ -164,17 +168,19 @@ public class ConfigsActivity extends TabActivity implements OnClickListener ,OnI
 			   nameForConstructor=new String [numOfPlayers];
 			   colorForConstructor=new int [numOfPlayers];
 			   
+			   Log.d("stoixeia paikton prota :","names: "+name[0]+"-"+name[1]+"-"+name[2]+"-"+name[3]+" colors: "+color[0]+"-"+color[1]+"-"+color[2]+"-"+color[3]);
+			   
 			   for(int i=0;i<numOfPlayers;i++)
 			   {
 				   for(int j=0;j<4;j++)
 				   {
-					   if(name[j]!=null)
+					   if(name[j]!=null&&nameForConstructor[i]==null)
 					   {
 						   nameForConstructor[i]=name[j];
 						   name[j]=null;
 					   }
 					   
-					   if(color[j]!=0)
+					   if(color[j]!=0&&colorForConstructor[i]==0)
 					   {
 						   colorForConstructor[i]=color[j];
 						   color[j]=0;
@@ -185,6 +191,7 @@ public class ConfigsActivity extends TabActivity implements OnClickListener ,OnI
 			   Intent gameIntent = new Intent(this,BoardActivity.class);
        		
        		   Bundle b = new Bundle();
+       		   
                b.putParcelable("edu.aueb.cs.uw.core.GameConfigs",new GameConfigs(this.numOfPlayers,nameForConstructor,colorForConstructor));
        		   gameIntent.putExtras(b);
        		   startActivity(gameIntent);

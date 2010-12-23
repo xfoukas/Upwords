@@ -9,4 +9,14 @@
 <string name="ok">OK</string>
 <string name="switch_message">Please choose the tile to change</string>
 <string name="cancel">Cancel</string>
+<string-array name="colors_array">
+        <item>White</item>
+        <item>Pink</item>
+        <item>Orange</item>
+        <item>Red</item>
+        <item>Green</item>
+        <item>Blue</item>
+        <item>Black</item>
+        <item>Yellow</item>
+</string-array>
 </resources>

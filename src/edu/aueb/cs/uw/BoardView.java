@@ -1,6 +1,8 @@
 package edu.aueb.cs.uw;
 
 
+import java.util.Iterator;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -26,6 +28,7 @@ public class BoardView extends View {
 	private static final int TRAY_AREA=1;
 	private static final int BOARD_AREA=2;
 	private static final int SCORE_AREA=3;
+	private static final String stackMessage="Tile Stack";
 	
 
 	private Paint fillScorePaint;
@@ -39,6 +42,8 @@ public class BoardView extends View {
     private Paint scorePaint;
     private Paint selectedTilePaint;
     private Paint underneathCellPaint;
+    private Paint stackPanePaint;
+    private Paint stackTextPaint;
 	private int defaultFontSize;
 	private Dimensions dimensions;
 	private Context mContext;
@@ -46,10 +51,13 @@ public class BoardView extends View {
 	private boolean tileIsMoved;
 	private boolean boardTileIsMoved;
 	private boolean switchMode;
+	private boolean stackOpen;
 	private int selectedTileNum;
 	private int selectedBoardTileX;
 	private int selectedBoardTileY;
 	private int movingTileX,movingTileY;
+	private int topLeftX,topLeftY;
+	private TileStack openStack;
 	private GameEngine ge;
 	private Rect [] tilesTray;
 	private Tile movingTile;
@@ -101,6 +109,8 @@ public class BoardView extends View {
 			}
 			break;
 		case MotionEvent.ACTION_MOVE:
+			stackOpen=false;
+			openStack=null;
 			if(selectedTileNum!=-1){
 				x=(int)event.getX();
 				y=(int)event.getY();
@@ -125,6 +135,8 @@ public class BoardView extends View {
 			
 			break;
 		case MotionEvent.ACTION_UP:
+			stackOpen=false;
+			openStack=null;
 			if(tileIsMoved){
 				x=(int)event.getX();
 				y=(int)event.getY();
@@ -194,11 +206,27 @@ public class BoardView extends View {
 		int j=findCellCol(x);
 		Tile t=b.getTile(i, j);
 		if(t!=null){
+			stackOpen=true;
+			openStack=(ge.getBoard().getTilePlacement())[i][j];
+			calculateStackCoords(x, y);
 			if(t.getAge()==turn) {
 				selectedBoardTileX=i;
 				selectedBoardTileY=j;
 			}			
 		}
+	}
+	
+	private void calculateStackCoords(int x, int y){
+		int size=openStack.getSize();
+		int height=size*dimensions.getCellSize()+2*dimensions.getCellSize();
+		if(y+height<=dimensions.getBoardheight()+dimensions.getScoreHeight())
+			topLeftY=y;
+		else
+			topLeftY=dimensions.getBoardheight()+dimensions.getScoreHeight()-height;		
+		if(x>=dimensions.getTotalWidth()-x)
+			topLeftX=x-dimensions.getCellSize()*3;
+		else
+			topLeftX=x+dimensions.getCellSize();
 	}
 
 	private void handleTrayClick(int x, int y) {
@@ -242,6 +270,13 @@ public class BoardView extends View {
 			tileTextPaint.setColor(Color.BLACK);
 			tileTextPaint.setStyle(Paint.Style.STROKE);
 			tileTextPaint.setTextAlign(Align.CENTER);
+			stackPanePaint=new Paint();
+			stackPanePaint.setStyle(Paint.Style.FILL);
+			stackPanePaint.setColor(Color.MAGENTA);
+			stackTextPaint=new Paint(Paint.ANTI_ALIAS_FLAG);
+			stackTextPaint.setColor(Color.BLACK);
+			stackTextPaint.setTextAlign(Align.CENTER);
+			stackTextPaint.setStyle(Paint.Style.STROKE);
 			selectedTilePaint=new Paint();
 			selectedTilePaint.setStyle(Paint.Style.FILL);
 			selectedTilePaint.setColor(Color.YELLOW);
@@ -263,9 +298,12 @@ public class BoardView extends View {
 			tileIsMoved=false;
 			boardTileIsMoved=false;
 			switchMode=false;
+			stackOpen=false;
 			selectedTileNum=-1;
 			selectedBoardTileX=-1;
 			selectedBoardTileY=-1;
+			topLeftX=-1;
+			topLeftY=-1;
 			setFocusable(true);
 		}
 		
@@ -283,6 +321,9 @@ public class BoardView extends View {
 		drawBoard(canvas);
 		drawScore(canvas);
 		drawMovingTile(canvas);
+		if(stackOpen){
+			drawStack(canvas, topLeftX, topLeftY, openStack);
+		}
 		if(ge.getBoard().isValidPlacement()) {
 			endTurn.setClickable(true);
 			endTurn.setImageResource(R.drawable.end_turn_available);
@@ -291,6 +332,38 @@ public class BoardView extends View {
 			endTurn.setClickable(false);
 			endTurn.setImageResource(R.drawable.end_turn);
 		}
+	}
+	
+	private void drawStack(Canvas canvas, int topLeftX,int topLeftY, TileStack ts){
+		int size=ts.getSize();
+		int height=size*dimensions.getCellSize()+2*dimensions.getCellSize();
+		int width=dimensions.getCellSize()*2;
+		Tile t;
+		Rect paneRect=new Rect(topLeftX,topLeftY,topLeftX+width,topLeftY+height);
+		canvas.drawRect(paneRect, stackPanePaint);
+		stackPanePaint.setStyle(Paint.Style.STROKE);
+		stackPanePaint.setColor(Color.BLACK);
+		canvas.drawRect(paneRect, stackPanePaint);
+		stackPanePaint.setStyle(Paint.Style.FILL);
+		stackPanePaint.setColor(Color.MAGENTA);
+		canvas.drawText(stackMessage, topLeftX+width/2, topLeftY+dimensions.getCellSize()/2, stackTextPaint);
+		canvas.drawLine(topLeftX, topLeftY+dimensions.getCellSize()/2+4, topLeftX+width, topLeftY+dimensions.getCellSize()/2+4, stackTextPaint);
+		Iterator<Tile>iter=ts.getStackIterator();
+		int i=1;
+		float txtSize=stackTextPaint.getTextSize();
+		stackTextPaint.setTextAlign(Align.LEFT);
+		stackTextPaint.setTextSize(2*defaultFontSize);
+		while(iter.hasNext()){
+			t=iter.next();
+			canvas.drawText(Integer.toString(i), topLeftX+dimensions.getCellSize()/4 , topLeftY+i*dimensions.getCellSize()+5*dimensions.getCellSize()/6,
+					stackTextPaint);
+			drawTile(canvas, topLeftX+3*dimensions.getCellSize()/4, topLeftY+((size+1)-i)*dimensions.getCellSize(),
+					topLeftX+3*dimensions.getCellSize()/4+dimensions.getCellSize(), topLeftY+((size+1)-i)*dimensions.getCellSize()+dimensions.getCellSize(),
+					Character.toString(t.getLetter()));
+			i++;
+		}
+		stackTextPaint.setTextAlign(Align.CENTER);
+		stackTextPaint.setTextSize(txtSize);
 	}
 	
 	private void drawMovingTile(Canvas canvas){

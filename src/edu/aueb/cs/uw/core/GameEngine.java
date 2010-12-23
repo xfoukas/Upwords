@@ -76,7 +76,10 @@ public class GameEngine {
 	public void giveUpTurn(){
 		undoAll();
 		gaveUpTurn++;
-		nextRound();
+		if(board.isFirstWord()){
+			nextRound();
+			board.setFirstWord(true);	
+		}
 	}
 	
 	public void makeSwitch(int tilePos){

@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
+import android.provider.OpenableColumns;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,7 +20,7 @@ import edu.aueb.cs.uw.core.Tile;
 import edu.aueb.cs.uw.core.TileStack;
 import edu.aueb.cs.uw.core.Tray;
 
-public class BoardView extends View{
+public class BoardView extends View {
 
 	private static int BOARD_SIZE=10;
 	private static final float MIN_FONT_DIPS = 14.0f;
@@ -523,4 +524,5 @@ public class BoardView extends View{
 	public void setPopupWindow(PopupWindow pw){
 		this.pw=pw;
 	}
+
 }

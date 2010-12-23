@@ -70,7 +70,7 @@ public class Board {
 		}
 		tilesAdded=new LinkedList<AddedTile>();
 		setTurn(1);
-		isFirstWord=true;
+		setFirstWord(true);
 	}
 	
 	/**
@@ -216,7 +216,7 @@ public class Board {
 		size=tilesAdded.size();
 		if(size==0)
 			return false;
-		if(isFirstWord){
+		if(isFirstWord()){
 			if(size==1)
 				return false;
 			for(AddedTile t : tilesAdded){
@@ -303,7 +303,7 @@ public class Board {
 			return INVALID;
 		if(tilesAddedFound==0&&tilesLeftToCheck>0)
 			return INVALID;
-		if(isFirstWord) return HAS_CONNECTION;
+		if(isFirstWord()) return HAS_CONNECTION;
 		return(hasConnetcion)?HAS_CONNECTION:IS_VALID_NO_CONNECTION;
 	}
 
@@ -421,7 +421,7 @@ public class Board {
 	}
 	
 	public void endTurn(){
-		isFirstWord=false;
+		setFirstWord(false);
 		tilesAdded=new LinkedList<AddedTile>();
 		this.nextTurn();
 	}
@@ -440,6 +440,14 @@ public class Board {
 	
 	public TileStack [][] getTilePlacement(){
 		return board;
+	}
+
+	public void setFirstWord(boolean isFirstWord) {
+		this.isFirstWord = isFirstWord;
+	}
+
+	public boolean isFirstWord() {
+		return isFirstWord;
 	}
 	
 }

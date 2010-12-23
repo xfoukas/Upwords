@@ -5,10 +5,14 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -19,6 +23,8 @@ import edu.aueb.cs.uw.core.Player;
 
 public class BoardActivity extends Activity 
 {
+	private final static int SHOW_STACK=1;
+	
 	private GameEngine ge;
 	private GameConfigs gc;
 	private BoardView bv;	
@@ -149,6 +155,7 @@ public class BoardActivity extends Activity
 			@Override
 			public void onClick(View v) {
 				bv.setSwitchMode(true);
+				ge.undoAll();
 				Dimensions dims=bv.getDimensions();
 				LayoutInflater inflater=(LayoutInflater)BoardActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				View pview=inflater.inflate(R.layout.popup_message, (ViewGroup)findViewById(R.layout.board));
@@ -168,7 +175,6 @@ public class BoardActivity extends Activity
 		        popUp.showAtLocation(findViewById(R.id.board_view), Gravity.CENTER, 0, 0);
 			}
 		});
-        
         
         
     }

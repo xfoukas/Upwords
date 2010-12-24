@@ -85,10 +85,14 @@ public class GameEngine {
 	}
 	
 	public void makeSwitch(int tilePos){
-		if(switchTile(tilePos)){
-			gaveUpTurn++;
-			nextRound();
+		if(switchTile(tilePos)) {
+			if(board.isFirstWord()){
+				nextRound();
+				board.setFirstWord(true);
+			} else
+				nextRound();
 		}
+
 	}
 	
 	public boolean switchTile(int tilePos){

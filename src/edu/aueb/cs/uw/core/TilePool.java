@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import android.util.Log;
+
+
 public class TilePool {
 	
 	public final static String BONUS_LETTERS="ΘΞΦΧΨ";
@@ -29,11 +32,11 @@ public class TilePool {
 		for (Map.Entry<Character, Integer> entry : tilesMap.entrySet()) {
 			if (p < entry.getValue()){
 				tilesMap.put(entry.getKey(),entry.getValue()-1);
+				numOfTiles=calculateNumOfTiles();
 				return new Tile(entry.getKey());
 			}
 			else p -= entry.getValue();
 		}
-		numOfTiles--;
 		return null;
 	}
 	

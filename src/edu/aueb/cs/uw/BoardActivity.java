@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +13,6 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import edu.aueb.cs.uw.core.GameConfigs;
@@ -58,7 +56,6 @@ public class BoardActivity extends Activity
         process+="\n"+players[firstPlayer].getNickname()+" begins the game";
         for(int i=0;i<numPlayers;i++)
         	ge.getTp().putTile(firstTile[i]);
-//        Log.d("BoardActivity", process);
         
         final Dialog dialog = new Dialog(this);
         dialog.setCancelable(true);
@@ -77,14 +74,11 @@ public class BoardActivity extends Activity
         });
 
         
-        /*ImageView image = (ImageView) dialog.findViewById(R.id.image);
-        image.setImageResource(R.drawable.scrabble_tiles);*/
         dialog.show();
         
         ge.beginGame(firstPlayer);
         bv.setGameEngine(ge);        
       
-        //bv.setContext(setApplicationContext()); 
         
         ImageButton ExitButton = (ImageButton)findViewById(R.id.exit_button_horizontal);
         ExitButton.setOnClickListener(new OnClickListener() {

@@ -2,9 +2,11 @@ package edu.aueb.cs.uw;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,10 +14,13 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 import edu.aueb.cs.uw.core.GameConfigs;
 import edu.aueb.cs.uw.core.GameEngine;
 import edu.aueb.cs.uw.core.Player;
+import edu.aueb.cs.uw.core.Tile;
 
 public class BoardActivity extends Activity 
 {
@@ -34,7 +39,49 @@ public class BoardActivity extends Activity
         ge=new GameEngine(gc);
         setContentView(R.layout.board);
         bv=(BoardView)findViewById(R.id.board_view);
-        ge.beginGame();
+        Player[] players=this.gc.getPlayersList();
+        int numPlayers=players.length;
+        Tile firstTile []=new Tile[numPlayers];
+        for(int i=0;i<numPlayers;i++)
+        	firstTile[i]=ge.getTp().getTile();
+        int firstPlayer=0;
+        char smallestLetter=firstTile[0].getLetter();
+        for (int i=0;i<numPlayers;i++) {
+        	if(firstTile[i].getLetter()<smallestLetter) {
+        		firstPlayer=i;
+        		smallestLetter=firstTile[i].getLetter();
+        	}
+        }
+        String process="";
+        for(int i=0;i<numPlayers;i++)
+        	process+=players[i].getNickname()+" got letter "+firstTile[i].getLetter()+"\n";
+        process+="\n"+players[firstPlayer].getNickname()+" begins the game";
+        for(int i=0;i<numPlayers;i++)
+        	ge.getTp().putTile(firstTile[i]);
+//        Log.d("BoardActivity", process);
+        
+        final Dialog dialog = new Dialog(this);
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.new_game_dialog);
+        dialog.setTitle("New Game");
+
+        TextView text = (TextView) dialog.findViewById(R.id.info_text);
+        text.setText(process);
+        
+        Button button = (Button) dialog.findViewById(R.id.info_ok);
+        button.setOnClickListener(new OnClickListener() {
+        @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        
+        /*ImageView image = (ImageView) dialog.findViewById(R.id.image);
+        image.setImageResource(R.drawable.scrabble_tiles);*/
+        dialog.show();
+        
+        ge.beginGame(firstPlayer);
         bv.setGameEngine(ge);        
       
         //bv.setContext(setApplicationContext()); 

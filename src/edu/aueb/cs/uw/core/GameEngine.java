@@ -12,18 +12,18 @@ public class GameEngine {
 	
 	public GameEngine(GameConfigs gc){
 		this.gc=gc;
-		tp=new TilePool();
+		setTp(new TilePool());
 		players=this.gc.getPlayersList();
 		for(int i=0;i<players.length;i++){
 			players[i].setPlayerID(i);
-			players[i].setPool(tp);
+			players[i].setPool(getTp());
 		}
 		setBoard(new Board());
 		setGaveUpTurn(0);
 	}
 	
-	public void beginGame(){
-		playerTurn=0;
+	public void beginGame(int firstPlayer){
+		playerTurn=firstPlayer;
 		for(int i=0;i<players.length;i++)
 			players[i].getTray().fillTray();
 	}
@@ -43,7 +43,7 @@ public class GameEngine {
 	}
 	
 	public boolean isEndOfGame(){
-		if(!tp.hasMoreTiles()){
+		if(!getTp().hasMoreTiles()){
 			if(players[getPlayerTurn()].getTray().getNumUnusedTiles()==0)
 				return true;
 		}
@@ -135,5 +135,13 @@ public class GameEngine {
 		for(int i=0;i<trayTiles.length;i++){
 			t.addTile(trayTiles[i]);
 		}
+	}
+
+	public void setTp(TilePool tp) {
+		this.tp = tp;
+	}
+
+	public TilePool getTp() {
+		return tp;
 	}
 }

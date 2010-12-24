@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import android.util.Log;
 
 
 public class TilePool {
@@ -38,6 +37,10 @@ public class TilePool {
 			else p -= entry.getValue();
 		}
 		return null;
+	}
+	
+	public void putTile(Tile t){
+		tilesMap.put(t.getLetter(), (tilesMap.get(t.getLetter())+1));
 	}
 	
 	public Tile switchTile(Tile tile){

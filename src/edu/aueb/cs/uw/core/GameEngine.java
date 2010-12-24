@@ -36,9 +36,9 @@ public class GameEngine {
 	public void nextRound(){
 		players[getPlayerTurn()].setScore(players[getPlayerTurn()].getScore()+getBoard().getScore());
 		players[getPlayerTurn()].getTray().fillTray();
-		getBoard().endTurn();
 		if(board.haveMadeChanges())
 			gaveUpTurn=0;
+		getBoard().endTurn();
 		playerTurn=(getPlayerTurn()+1)%gc.getNumPlayers();
 	}
 	
@@ -79,7 +79,9 @@ public class GameEngine {
 		if(board.isFirstWord()){
 			nextRound();
 			board.setFirstWord(true);	
-		}
+		} else
+			nextRound();
+		
 	}
 	
 	public void makeSwitch(int tilePos){

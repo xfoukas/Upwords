@@ -18,6 +18,16 @@ public class TilePool {
 		this.setNumOfTiles(calculateNumOfTiles());
 	}
 	
+	public TilePool(TilePool tp) {
+		this.setNumOfTiles(tp.getNumOfTiles());
+		tilesMap=new HashMap<Character, Integer>();
+		tilesMap.putAll(tilesMap);
+	}
+	
+	public Map<Character,Integer> getTilesMap(){
+		return tilesMap;
+	}
+	
 	public int calculateNumOfTiles(){
 		int tiles=0;
 		for(int t : tilesMap.values())

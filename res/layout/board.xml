@@ -21,10 +21,8 @@
        android:layout_height="fill_parent"
        android:layout_weight="1"
        android:focusable="true"
-       android:clickable="true"
-       android:longClickable="true"
        android:drawSelectorOnTop="false"/>
-
+       
      <LinearLayout android:id="@+id/toolbar_horizontal"
                   android:orientation="horizontal"
                   android:layout_width="fill_parent"
@@ -49,6 +47,8 @@
    	  <ImageButton android:id="@+id/endturn_button_horizontal"
                    style="@style/toolbar_button"
     	           android:src="@drawable/end_turn"
+    	           android:clickable="false"
+    	           android:longClickable="false"
                    />
     </LinearLayout>
   </LinearLayout>

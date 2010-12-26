@@ -13,6 +13,17 @@ public class Dimensions {
 		totalHeight=totalWidth=
 		cellSize=0;
 	}
+	
+	public Dimensions(Dimensions dimensions){
+		boardheight=dimensions.getBoardheight();
+		scoreHeight=dimensions.getScoreHeight();
+		trayHeight=dimensions.getTrayHeight();
+		padding=dimensions.getPadding();
+		top=dimensions.getTop();
+		totalHeight=dimensions.getTotalHeight();
+		totalWidth=dimensions.getTotalWidth();
+		cellSize=dimensions.getCellSize();
+	}
 
 	public void setBoardheight(int boardheight) {
 		this.boardheight = boardheight;

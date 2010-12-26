@@ -36,7 +36,10 @@ public class BoardActivity extends Activity
         gc=extras.getParcelable("edu.aueb.cs.uw.core.GameConfigs");
         ge=new GameEngine(gc);
         setContentView(R.layout.board);
+       
         bv=(BoardView)findViewById(R.id.board_view);
+        bv.setGameEngine(ge);        
+
         Player[] players=this.gc.getPlayersList();
         int numPlayers=players.length;
         Tile firstTile []=new Tile[numPlayers];
@@ -77,7 +80,6 @@ public class BoardActivity extends Activity
         dialog.show();
         
         ge.beginGame(firstPlayer);
-        bv.setGameEngine(ge);        
       
         
         ImageButton ExitButton = (ImageButton)findViewById(R.id.exit_button_horizontal);
@@ -102,6 +104,53 @@ public class BoardActivity extends Activity
         	}
         	
         });
+        
+        final ImageButton EndTurn = (ImageButton)findViewById(R.id.endturn_button_horizontal);
+        EndTurn.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				
+				AlertDialog.Builder b = new AlertDialog.Builder(BoardActivity.this);
+        		b.setMessage("Finish turn?")
+        		       .setCancelable(false)
+        		       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        		           public void onClick(DialogInterface dialog, int id) {
+        		        	   ge.nextRound();
+        		        	   EndTurn.setClickable(false);
+        		        	   EndTurn.setImageResource(R.drawable.end_turn);
+        						if(ge.isEndOfGame()){
+        							String message;
+        							Player p=ge.endGame();
+        							if(p==null)
+        								message="The game is a draw";
+        							else
+        								message="Player "+p.getNickname()+" wins!!!";
+        							AlertDialog.Builder builder = new AlertDialog.Builder(BoardActivity.this);
+        			        		builder.setMessage(message)
+        			        		       .setCancelable(false)
+        			        		       .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        			        		           public void onClick(DialogInterface dialog, int id) {
+        			        		                BoardActivity.this.finish();
+        			        		           }
+        			        		       });
+        			        		AlertDialog alrt = builder.create();
+        			        		alrt.show();
+        						}
+        		           }
+        		       })
+        		       .setNegativeButton("No", new DialogInterface.OnClickListener() {
+        		           public void onClick(DialogInterface dialog, int id) {
+        		                dialog.cancel();
+        		           }
+        		       });
+        		AlertDialog alert = b.create();
+        		alert.show();	
+			}
+		});
+        
+        EndTurn.setClickable(false);
+        bv.setEndTurn(EndTurn);
         
         
         ImageButton GiveUpTurn = (ImageButton)findViewById(R.id.giveturn_button_horizontal);
@@ -142,48 +191,7 @@ public class BoardActivity extends Activity
 		});
         
         
-        ImageButton EndTurn = (ImageButton)findViewById(R.id.endturn_button_horizontal);
-        bv.setEndTurn(EndTurn);
-        EndTurn.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				
-				AlertDialog.Builder b = new AlertDialog.Builder(BoardActivity.this);
-        		b.setMessage("Finish turn?")
-        		       .setCancelable(false)
-        		       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-        		           public void onClick(DialogInterface dialog, int id) {
-        		        	   ge.nextRound();
-        						if(ge.isEndOfGame()){
-        							String message;
-        							Player p=ge.endGame();
-        							if(p==null)
-        								message="The game is a draw";
-        							else
-        								message="Player "+p.getNickname()+" wins!!!";
-        							AlertDialog.Builder builder = new AlertDialog.Builder(BoardActivity.this);
-        			        		builder.setMessage(message)
-        			        		       .setCancelable(false)
-        			        		       .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-        			        		           public void onClick(DialogInterface dialog, int id) {
-        			        		                BoardActivity.this.finish();
-        			        		           }
-        			        		       });
-        			        		AlertDialog alrt = builder.create();
-        			        		alrt.show();
-        						}
-        		           }
-        		       })
-        		       .setNegativeButton("No", new DialogInterface.OnClickListener() {
-        		           public void onClick(DialogInterface dialog, int id) {
-        		                dialog.cancel();
-        		           }
-        		       });
-        		AlertDialog alert = b.create();
-        		alert.show();	
-			}
-		});
+        
         
         ImageButton switchTile = (ImageButton)findViewById(R.id.switch_button_horizontal);
         switchTile.setOnClickListener(new OnClickListener() {

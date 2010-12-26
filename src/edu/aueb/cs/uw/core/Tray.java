@@ -18,6 +18,16 @@ public class Tray {
 		this.setPool(pool);
 	}
 
+	public Tray(Tray t){
+		tray=new Tile[TRAY_SIZE];
+		for(int i=0;i<t.getNumUnusedTiles();i++)
+			tray[i]=new Tile(t.getTile(i));
+		this.setPlayerID(t.getPlayerID());
+		this.setNumOfTiles(t.getNumOfTiles());
+		this.setNumUnusedTiles(t.getNumUnusedTiles());
+		this.setPool(new TilePool(t.getPool()));
+	}
+	
 	public int fillTray(){
 		Tile t;
 		int neededTiles=TRAY_SIZE-numUnusedTiles;

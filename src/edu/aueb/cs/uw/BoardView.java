@@ -1,6 +1,5 @@
 package edu.aueb.cs.uw;
 
-
 import java.util.Iterator;
 
 import android.content.Context;
@@ -10,9 +9,13 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.widget.ImageButton;
 import android.widget.PopupWindow;
 import edu.aueb.cs.uw.core.Board;
@@ -21,236 +24,531 @@ import edu.aueb.cs.uw.core.Tile;
 import edu.aueb.cs.uw.core.TileStack;
 import edu.aueb.cs.uw.core.Tray;
 
-public class BoardView extends View {
-
+public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
+	
 	private static int BOARD_SIZE=10;
 	private static final float MIN_FONT_DIPS = 14.0f;
-	private static final int TRAY_AREA=1;
-	private static final int BOARD_AREA=2;
-	private static final int SCORE_AREA=3;
-	private static final String stackMessage="Tile Stack";
 	
-
-	private Paint fillScorePaint;
-    private Paint fillTrayPaint;
-    private Paint fillBoardPaint;
-    private Paint strokePaint;
-    private Paint tileFillPaint;
-    private Paint tileStrokePaint;
-    private Paint tileTextPaint;
-    private Paint centralSquarePaint;
-    private Paint scorePaint;
-    private Paint selectedTilePaint;
-    private Paint underneathCellPaint;
-    private Paint stackPanePaint;
-    private Paint stackTextPaint;
-	private int defaultFontSize;
 	private Dimensions dimensions;
-	private Context mContext;
-	private boolean isInitialized;
-	private boolean tileIsMoved;
-	private boolean boardTileIsMoved;
-	private boolean switchMode;
-	private boolean stackOpen;
-	private int selectedTileNum;
-	private int selectedBoardTileX;
-	private int selectedBoardTileY;
-	private int movingTileX,movingTileY;
-	private int topLeftX,topLeftY;
-	private TileStack openStack;
-	private GameEngine ge;
-	private Rect [] tilesTray;
-	private Tile movingTile;
+	
 	private ImageButton endTurn;
-	private PopupWindow pw;
 	
-
-	public BoardView( Context context, AttributeSet attrs ) 
-    {
-        super(context, attrs);
-        isInitialized=false;
-        mContext=context;
-    }
-
-	@Override
-	protected void onDraw(android.graphics.Canvas canvas) 
-	{
-		initialise(mContext);
-		drawTemplate(canvas);
-		invalidate();
-	}
-
+	protected int defaultFontSize;
 	
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		int evt=event.getAction();
-		int x,y;
-		switch(evt){
-		case MotionEvent.ACTION_DOWN:
-			x=(int)event.getX();
-			y=(int)event.getY();
-			int area=getArea(x, y);
-			switch(area){
-			case TRAY_AREA:
-				handleTrayClick(x,y);
-				if(switchMode&&selectedTileNum!=-1){
-					switchMode=false;
-					pw.dismiss();
-					ge.makeSwitch(selectedTileNum);
-					selectedTileNum=-1;
+	private DrawingThread thread;
+	
+	class DrawingThread extends Thread {
+		
+		private static final int TRAY_AREA=1;
+		private static final int BOARD_AREA=2;
+		private static final int SCORE_AREA=3;
+		private static final String STACK_MESSAGE="Tile Stack";
+		
+		private boolean mRun;
+		private SurfaceHolder mSurfaceHolder;
+		
+		private Dimensions dims;
+		private GameEngine ge;
+		private int defaultFontS;
+		private PopupWindow pw;
+		
+		private int event;
+		private int eventX,eventY;
+		
+		private Handler mHandler;
+		
+		private boolean switchMode;
+		private boolean stackOpen;
+		private boolean tileIsMoved;
+		private boolean boardTileIsMoved;
+		private TileStack openStack;
+		private Tile movingTile;
+		private Rect [] tilesTray;
+		
+		private Paint fillScorePaint;
+	    private Paint fillTrayPaint;
+	    private Paint fillBoardPaint;
+	    private Paint strokePaint;
+	    private Paint tileFillPaint;
+	    private Paint tileStrokePaint;
+	    private Paint tileTextPaint;
+	    private Paint centralSquarePaint;
+	    private Paint scorePaint;
+	    private Paint selectedTilePaint;
+	    private Paint underneathCellPaint;
+	    private Paint stackPanePaint;
+	    private Paint stackTextPaint;
+	    
+	    private int selectedTileNum;
+	    private int selectedBoardTileX,selectedBoardTileY;
+	    private int movingTileX,movingTileY;
+	    private int topLeftX,topLeftY;
+		
+		public DrawingThread(SurfaceHolder holder, Handler handler){
+			mSurfaceHolder=holder;
+			mRun=false;
+			switchMode=false;
+			tileIsMoved=false;
+			boardTileIsMoved=false;
+			stackOpen=false;
+			openStack=new TileStack();
+			event=eventX=eventY=-1;
+			selectedTileNum=-1;
+			selectedBoardTileX=-1;
+			selectedBoardTileY=-1;
+			movingTileX=-1;
+			movingTileY=-1;
+			topLeftX=-1;
+			topLeftY=-1;
+			mHandler=handler;
+			dims=new Dimensions();
+			movingTile=new Tile();
+			defaultFontS=(int)BoardView.MIN_FONT_DIPS;
+			ge=null;
+			tilesTray=new Rect[1];
+			paintInitialisation();
+		}
+		
+		public void setRunning(boolean b){
+			mRun=b;
+		}
+		
+		
+		@Override
+		public void run() {
+			while(mRun){
+				Canvas c = null;
+				try {
+					c=mSurfaceHolder.lockCanvas(null);
+					synchronized (mSurfaceHolder) {
+						updateGame();
+						doDraw(c);
+					}
+				} finally {
+					if (c!=null) {
+						mSurfaceHolder.unlockCanvasAndPost(c);
+					}
+				}
+			}
+		}
+		
+		public void setSwitchMode(boolean b) {
+			synchronized (mSurfaceHolder) {
+				switchMode=b;
+			}
+		}
+		
+		public void setGameEngine(GameEngine ge) {
+			synchronized (mSurfaceHolder) {
+				this.ge=ge;
+			}
+		}
+		
+		public void setDimensions(Dimensions dimensions){
+			synchronized (mSurfaceHolder) {
+				dims=dimensions;				
+			}
+		}
+
+		public void setEventInfo(int evt, int x, int y) {
+			synchronized (mSurfaceHolder) {
+				event=evt;
+				eventX=x;
+				eventY=y;
+			}
+		}
+		
+		public void setDefaultFontSize(int dfs){
+			synchronized (mSurfaceHolder) {
+				defaultFontS=dfs;
+			}
+		}
+		
+		public void setPopupWindow(PopupWindow popUp) {
+			synchronized (mSurfaceHolder) {
+				this.pw=popUp;
+			}
+		}
+		
+		
+		private void updateGame() {
+			if(ge==null) return;
+			switch(event){
+			case MotionEvent.ACTION_DOWN:
+				int area=getArea(eventX, eventY);
+				switch(area){
+				case TRAY_AREA:
+					handleTrayClick(eventX,eventY);
+					if(switchMode&&selectedTileNum!=-1){
+						switchMode=false;
+						pw.dismiss();
+						ge.makeSwitch(selectedTileNum);
+						selectedTileNum=-1;
+					}
+					break;
+				case BOARD_AREA:
+					handleBoardClick(eventX,eventY);
+					break;
+				case SCORE_AREA:
+				default:
+					break;
 				}
 				break;
-			case BOARD_AREA:
-				handleBoardClick(x,y);
+			case MotionEvent.ACTION_MOVE:
+				stackOpen=false;
+				openStack=null;
+				if(selectedTileNum!=-1){
+					int turn=ge.getPlayerTurn();
+					Tray t=ge.getPlayer(turn).getTray();
+					if(!tileIsMoved) 
+						movingTile=t.temporaryRemoveTile(selectedTileNum);
+					tileIsMoved=true;
+					movingTileX=getMovingTileXPos(eventX);
+					movingTileY=getMovingTileYPos(eventY);
+				} else if(selectedBoardTileX!=-1&&selectedBoardTileY!=-1){
+					Board b=ge.getBoard();
+					if(!tileIsMoved)
+						movingTile=b.removeTile(selectedBoardTileX, selectedBoardTileY);
+					tileIsMoved=true;
+					boardTileIsMoved=true;
+					movingTileX=getMovingTileXPos(eventX);
+					movingTileY=getMovingTileYPos(eventY);
+				}
+				
 				break;
-			case SCORE_AREA:
-			default:
-				break;
-			}
-			break;
-		case MotionEvent.ACTION_MOVE:
-			stackOpen=false;
-			openStack=null;
-			if(selectedTileNum!=-1){
-				x=(int)event.getX();
-				y=(int)event.getY();
-				int turn=ge.getPlayerTurn();
-				Tray t=ge.getPlayer(turn).getTray();
-				if(!tileIsMoved)
-					movingTile=t.temporaryRemoveTile(selectedTileNum);
-				tileIsMoved=true;
-				movingTileX=getMovingTileXPos(x);
-				movingTileY=getMovingTileYPos(y);
-			} else if(selectedBoardTileX!=-1&&selectedBoardTileY!=-1){
-				x=(int)event.getX();
-				y=(int)event.getY();
-				Board b=ge.getBoard();
-				if(!tileIsMoved)
-					movingTile=b.removeTile(selectedBoardTileX, selectedBoardTileY);
-				tileIsMoved=true;
-				boardTileIsMoved=true;
-				movingTileX=getMovingTileXPos(x);
-				movingTileY=getMovingTileYPos(y);
-			}
-			
-			break;
-		case MotionEvent.ACTION_UP:
-			stackOpen=false;
-			openStack=null;
-			if(tileIsMoved){
-				x=(int)event.getX();
-				y=(int)event.getY();
-				Board b=ge.getBoard();
-				int turn=ge.getPlayerTurn();
-				Tray t=ge.getPlayer(turn).getTray();
-				if(getArea(x, y)==BOARD_AREA){
-					int i=findCellRow(y);
-					int j=findCellCol(x);
-					if(b.canAddTile(i,j,movingTile)) {
-						b.addTile(movingTile, i, j);
-						if(!boardTileIsMoved) {
-							t.addTempRemovedTile(movingTile, selectedTileNum);
-							t.useTile(selectedTileNum);
+			case MotionEvent.ACTION_UP:
+				stackOpen=false;
+				openStack=null;
+				if(tileIsMoved){
+					Board b=ge.getBoard();
+					int turn=ge.getPlayerTurn();
+					Tray t=ge.getPlayer(turn).getTray();
+					if(getArea(eventX, eventY)==BOARD_AREA){
+						int i=findCellRow(eventY);
+						int j=findCellCol(eventX);
+						if(b.canAddTile(i,j,movingTile)) {
+							b.addTile(movingTile, i, j);
+							if(!boardTileIsMoved) {
+								t.addTempRemovedTile(movingTile, selectedTileNum);
+								t.useTile(selectedTileNum);
+							}
+						}
+						else {
+							if(boardTileIsMoved) {
+								b.addTile(movingTile, selectedBoardTileX, selectedBoardTileY);
+							}
+							else {
+								t.addTempRemovedTile(movingTile, selectedTileNum);
+							}
+						}
+					} else if(getArea(eventX, eventY)==TRAY_AREA) {
+						if(boardTileIsMoved) {
+							t.addTile(movingTile);
+						}
+						else if(selectedTileNum!=-1) {
+							t.addTempRemovedTile(movingTile, selectedTileNum); 
+						}
+					} else{
+						if(selectedTileNum!=-1) {
+							t.addTempRemovedTile(movingTile, selectedTileNum); 
+						}
+						else if(selectedBoardTileX!=-1&&selectedBoardTileY!=-1) {
+							b.addTile(movingTile, selectedBoardTileX, selectedBoardTileY);
 						}
 					}
-					else {
-						if(boardTileIsMoved)
-							b.addTile(movingTile, selectedBoardTileX, selectedBoardTileY);
-						else
-							t.addTempRemovedTile(movingTile, selectedTileNum);
+					if(ge.getBoard().isValidPlacement()){
+						Message msg = mHandler.obtainMessage();
+		                Bundle bundle = new Bundle();
+		                bundle.putBoolean("clickable", true);
+		                msg.setData(bundle);
+		                mHandler.sendMessage(msg);
+					} else {
+						Message msg = mHandler.obtainMessage();
+		                Bundle bundle = new Bundle();
+		                bundle.putBoolean("clickable", false);
+		                msg.setData(bundle);
+		                mHandler.sendMessage(msg);
 					}
-				} else if(getArea(x, y)==TRAY_AREA) {
-					if(boardTileIsMoved) 
-						t.addTile(movingTile);
-					else if(selectedTileNum!=-1)
-						t.addTempRemovedTile(movingTile, selectedTileNum); 
-				} else{
-					if(selectedTileNum!=-1) 
-						t.addTempRemovedTile(movingTile, selectedTileNum); 
-					else if(selectedBoardTileX!=-1&&selectedBoardTileY!=-1) 
-						b.addTile(movingTile, selectedBoardTileX, selectedBoardTileY);
+					undoMovingChanges();
+				} else {
+					undoMovingChanges();
 				}
-				undoMovingChanges();
-			} else {
-				undoMovingChanges();
+				break;
+			default:
+				break;	
 			}
-			break;
-		default:
-			break;	
+		
 		}
-		return true;
-	}
-	
-	private int getMovingTileXPos(int x){
-		if(x<getDimensions().getCellSize()/2)
-			return getDimensions().getCellSize()/2;
-		else if(x>getDimensions().getTotalWidth()-getDimensions().getCellSize()/2)
-			return getDimensions().getTotalWidth()-getDimensions().getCellSize()/2;
-		else 
-			return x;
-	}
-	
-	private int getMovingTileYPos(int y){
-		if(y<getDimensions().getCellSize()/2)
-			return getDimensions().getCellSize()/2;
-		else if(y>getDimensions().getTotalHeight()-getDimensions().getCellSize()/2)
-			return getDimensions().getTotalHeight()-getDimensions().getCellSize()/2;
-		else
-			return y;
-	}
 
-	private void handleBoardClick(int x, int y) {
-		Board b=ge.getBoard();
-		int turn=b.getTurn();
-		int i=findCellRow(y);
-		int j=findCellCol(x);
-		Tile t=b.getTile(i, j);
-		if(t!=null){
-			stackOpen=true;
-			openStack=(ge.getBoard().getTilePlacement())[i][j];
-			calculateStackCoords(x, y);
-			if(t.getAge()==turn) {
-				selectedBoardTileX=i;
-				selectedBoardTileY=j;
+		private void doDraw(Canvas canvas) {
+			if(ge==null) return;
+			Rect bRect=new Rect(0,dims.getScoreHeight(),dims.getTotalWidth(),dims.getScoreHeight()+dims.getBoardheight());
+			canvas.drawRect(bRect, fillBoardPaint);
+			Rect scRect=new Rect(0,0, dims.getTotalWidth(),dims.getTotalHeight()-dims.getBoardheight()-dims.getTrayHeight());
+			canvas.drawRect(scRect, fillScorePaint);
+			Rect tRect=new Rect(0,dims.getScoreHeight()+dims.getBoardheight(), dims.getTotalWidth(),dims.getTotalHeight());
+			canvas.drawRect(tRect, fillTrayPaint);
+			canvas.drawRect(scRect, fillScorePaint);
+			drawTray(canvas);
+			drawBoard(canvas);
+			drawScore(canvas);
+			drawMovingTile(canvas);
+			if(stackOpen){
+				drawStack(canvas, topLeftX, topLeftY, openStack);
+			}
+		}
+		
+		private void drawStack(Canvas canvas, int x, int y,
+				TileStack ts) {
+			int size=ts.getSize();
+			int height=size*dims.getCellSize()+2*dims.getCellSize();
+			int width=dims.getCellSize()*2;
+			Tile t;
+			Rect paneRect=new Rect(x,y,x+width,y+height);
+			canvas.drawRect(paneRect, stackPanePaint);
+			stackPanePaint.setStyle(Paint.Style.STROKE);
+			stackPanePaint.setColor(Color.BLACK);
+			canvas.drawRect(paneRect, stackPanePaint);
+			stackPanePaint.setStyle(Paint.Style.FILL);
+			stackPanePaint.setARGB(255, 99, 120, 130);
+			canvas.drawText(STACK_MESSAGE, x+width/2, y+dims.getCellSize()/2, stackTextPaint);
+			canvas.drawLine(x, y+dims.getCellSize()/2+4, x+width, y+dims.getCellSize()/2+4, stackTextPaint);
+			Iterator<Tile>iter=ts.getStackIterator();
+			int i=1;
+			float txtSize=stackTextPaint.getTextSize();
+			stackTextPaint.setTextAlign(Align.LEFT);
+			stackTextPaint.setTextSize(2*defaultFontS);
+			while(iter.hasNext()){
+				t=iter.next();
+				canvas.drawText(Integer.toString(i), x+dims.getCellSize()/4 , y+i*dims.getCellSize()+5*dims.getCellSize()/6,
+						stackTextPaint);
+				drawTile(canvas, x+3*dims.getCellSize()/4, y+((size+1)-i)*dims.getCellSize(),
+						x+3*dims.getCellSize()/4+dims.getCellSize(), y+((size+1)-i)*dims.getCellSize()+dims.getCellSize(),
+						Character.toString(t.getLetter()));
+				i++;
+			}
+			stackTextPaint.setTextAlign(Align.CENTER);
+			stackTextPaint.setTextSize(txtSize);
+		}
+
+		private void drawMovingTile(Canvas canvas) {
+			if(tileIsMoved){
+				tileTextPaint.setTextSize(defaultFontS*2);
+				drawTile(canvas, movingTileX-dims.getCellSize()/2, movingTileY-dims.getCellSize()/2, 
+						movingTileX+dims.getCellSize()/2, movingTileY+dims.getCellSize()/2,
+						Character.toString(movingTile.getLetter()));
+				if(getArea(movingTileX, movingTileY)==BOARD_AREA){
+					int i=findCellRow(movingTileY);
+					int j=findCellCol(movingTileX);
+					Board b=ge.getBoard();
+					if(b.canAddTile(i,j,movingTile))
+						underneathCellPaint.setColor(Color.GREEN);
+					else
+						underneathCellPaint.setColor(Color.RED);
+					int left=dims.getPadding()+j*dims.getCellSize();
+					int right=left+dims.getCellSize();
+					int top=dims.getScoreHeight()+i*dims.getCellSize();
+					int bottom=top+dims.getCellSize();
+					Rect underRect=new Rect(left, top, right, bottom);
+					canvas.drawRect(underRect, underneathCellPaint);
+				}
+			}
+		}
+
+		private void drawScore(Canvas canvas) {
+			if(ge==null) return;
+			
+			int numOfPlayers=ge.getNumPlayers();
+			
+			int maxHeight=dims.getScoreHeight();
+			float scoreWidth=dims.getTotalWidth()/numOfPlayers;
+			
+			scorePaint.setTextAlign(Align.CENTER);
+			
+			for(int i=0;i<numOfPlayers;i++){
+				if(i==ge.getPlayerTurn())
+					scorePaint.setTextSize(1.3f*defaultFontS);
+				scorePaint.setColor(ge.getPlayer(i).getColor());
+				canvas.drawText(ge.getPlayer(i).getNickname()+":"+ge.getPlayer(i).getScore(),
+						i*scoreWidth+(scoreWidth/2) ,3*maxHeight/4, scorePaint);
+				scorePaint.setTextSize(defaultFontS);
+			}
+			
+		}
+
+		private void drawBoard(Canvas canvas) {
+			int bHeight=dims.getBoardheight();
+			
+			int bWidth=bHeight;
+			int sHeight=dims.getScoreHeight();
+			int padding=dims.getPadding();
+			
+			int left=dims.getPadding()+(BOARD_SIZE/2-1)*dims.getCellSize();
+			int top=dims.getScoreHeight()+(BOARD_SIZE/2-1)*dims.getCellSize();
+			int bottom= 2*dims.getCellSize()+top;
+			int right= 2*dims.getCellSize()+left;
+			
+			Rect centralRect=new Rect(left, top, right, bottom);
+			canvas.drawRect(centralRect, centralSquarePaint);
+			
+			for(int i=0;i<11;i++)
+			{
+				int x=i*dims.getCellSize();
+				canvas.drawLine(padding+x,sHeight,padding+x,sHeight+bHeight,strokePaint);
+			}
+			
+			for(int i=0;i<11;i++)
+			{
+				int y=i*dims.getCellSize();
+				canvas.drawLine(padding,sHeight+y,padding+bWidth,sHeight+y,strokePaint);
+			}
+			
+			if(ge==null) return;
+			
+			Board b=ge.getBoard();
+			TileStack [][] ts=b.getTilePlacement();
+			for(int i=0;i<ts.length;i++){
+				for(int j=0;j<ts[i].length;j++){
+					if(b.hasTile(i, j)){
+						if(selectedBoardTileX==i&&selectedBoardTileY==j)
+							tileFillPaint.setColor(Color.YELLOW);
+						else if(b.getTile(i, j).getAge()==b.getTurn())
+							tileFillPaint.setARGB(255, 160, 160, 200);
+						left=dims.getPadding()+j*dims.getCellSize();
+						right=left+dims.getCellSize();
+						top=dims.getScoreHeight()+i*dims.getCellSize();
+						bottom=top+dims.getCellSize();
+						tileTextPaint.setTextSize(2*defaultFontS);
+						drawTile(canvas,left , top, right, bottom, Character.toString(ts[i][j].getTop().getLetter()));
+						tileFillPaint.setColor(Color.WHITE);
+					}
+				}
+			}	
+		}
+
+		private void drawTray(Canvas canvas) {
+
+			int turn=ge.getPlayerTurn();
+			Tray t=ge.getPlayer(turn).getTray();
+			int tileSize=dims.getTotalWidth()/Tray.TRAY_SIZE;
+			if(tileSize>=dims.getTrayHeight())
+				tileSize=4*dims.getTrayHeight()/5;
+			int bot_border=(dims.getTrayHeight()-tileSize)/2;
+			int space=(dims.getTotalWidth()-(tileSize*Tray.TRAY_SIZE))/(Tray.TRAY_SIZE+1);
+			tilesTray=new Rect[t.getNumUnusedTiles()]; 
+			for(int i=0;i<t.getNumUnusedTiles();i++){
+				if(t.getTile(i)==null) continue;
+				if(selectedTileNum==i)
+					tileFillPaint.setColor(Color.YELLOW);
+				tileTextPaint.setTextSize(defaultFontS*3);
+				tilesTray[i]=drawTile(canvas, i*tileSize+(i+1)*space, dims.getTotalHeight()-tileSize-bot_border, 
+						i*tileSize+(i+1)*space+tileSize, dims.getTotalHeight()-bot_border, t.getTileLetter(i));
+				tileFillPaint.setColor(Color.WHITE);
+			}
+		}
+		
+		private Rect drawTile(Canvas canvas, int left, int top, int right, int bottom, String text){
+			Rect tileRect;
+			tileRect=new Rect(left, top, right, bottom);
+			canvas.drawRect(tileRect, tileFillPaint);
+			canvas.drawRect(tileRect, tileStrokePaint);
+			canvas.drawText(text,left+(right-left)/2,bottom-(bottom-top)/5, tileTextPaint);
+			return tileRect;
+		}
+		
+		private void undoMovingChanges(){
+			tileIsMoved=false;
+			boardTileIsMoved=false;
+			selectedTileNum=-1;
+			selectedBoardTileX=-1;
+			selectedBoardTileY=-1;
+		}
+		
+		private int getMovingTileXPos(int x){
+			if(x<dims.getCellSize()/2)
+				return dims.getCellSize()/2;
+			else if(x>dims.getTotalWidth()-dims.getCellSize()/2)
+				return dims.getTotalWidth()-dims.getCellSize()/2;
+			else 
+				return x;
+		}
+		
+		private int getMovingTileYPos(int y){
+			if(y<dims.getCellSize()/2)
+				return dims.getCellSize()/2;
+			else if(y>dims.getTotalHeight()-dims.getCellSize()/2)
+				return dims.getTotalHeight()-dims.getCellSize()/2;
+			else
+				return y;
+		}
+		
+		private void handleBoardClick(int x, int y) {
+			Board b=ge.getBoard();
+			int turn=b.getTurn();
+			int i=findCellRow(y);
+			int j=findCellCol(x);
+			Tile t=b.getTile(i, j);
+			if(t!=null){
+				stackOpen=true;
+				openStack=(ge.getBoard().getTilePlacement())[i][j];
+				calculateStackCoords(x, y);
+				if(t.getAge()==turn) {
+					selectedBoardTileX=i;
+					selectedBoardTileY=j;
+				}			
+			}
+		}
+		
+		private void handleTrayClick(int x, int y) {
+			for(int i=0;i<tilesTray.length;i++){
+				if(tilesTray[i].contains(x, y))
+						selectedTileNum=i;
 			}			
 		}
-	}
-	
-	private void calculateStackCoords(int x, int y){
-		int size=openStack.getSize();
-		int height=size*dimensions.getCellSize()+2*dimensions.getCellSize();
-		if(y+height<=dimensions.getBoardheight()+dimensions.getScoreHeight())
-			topLeftY=y;
-		else
-			topLeftY=dimensions.getBoardheight()+dimensions.getScoreHeight()-height;		
-		if(x>=dimensions.getTotalWidth()-x)
-			topLeftX=x-dimensions.getCellSize()*3;
-		else
-			topLeftX=x+dimensions.getCellSize();
-	}
-
-	private void handleTrayClick(int x, int y) {
-		for(int i=0;i<tilesTray.length;i++){
-			if(tilesTray[i].contains(x, y)){
-				selectedTileNum=i;
-			}
+		
+		private void calculateStackCoords(int x, int y){
+			int size=openStack.getSize();
+			int height=size*dims.getCellSize()+2*dims.getCellSize();
+			if(y+height<=dims.getBoardheight()+dims.getScoreHeight())
+				topLeftY=y;
+			else
+				topLeftY=dims.getBoardheight()+dims.getScoreHeight()-height;		
+			if(x>=dims.getTotalWidth()-x)
+				topLeftX=x-dims.getCellSize()*3;
+			else
+				topLeftX=x+dims.getCellSize();
 		}
-	}
-	
-	private void undoMovingChanges(){
-		tileIsMoved=false;
-		boardTileIsMoved=false;
-		selectedTileNum=-1;
-		selectedBoardTileX=-1;
-		selectedBoardTileY=-1;
-	}
+		
+		private int getArea(int x,int y){
+			if(y<=getDimensions().getScoreHeight())
+				return SCORE_AREA;
+			else if(y>getDimensions().getScoreHeight()&&
+					y<=getDimensions().getScoreHeight()+getDimensions().getBoardheight())
+				return BOARD_AREA;
+			else return TRAY_AREA;
+		}
+		
+		private int findCellRow(int y){
+			/*Needs y coordinate to find row*/
+			for(int i=0;i<BOARD_SIZE;i++){
+				if(y>=dims.getScoreHeight()+i*dims.getCellSize()&&
+						y<=dims.getScoreHeight()+i*dims.getCellSize()+dims.getCellSize())
+					return i;
+			}
+			return 0;
+		}
+		
+		private int findCellCol(int x){
+			/*Needs x coordinate to find column*/
+			for(int i=0;i<BOARD_SIZE;i++){
+				if(x>=dims.getPadding()+i*dims.getCellSize()&&
+						x<=dims.getPadding()+i*dims.getCellSize()+dims.getCellSize())
+					return i;
+			}
+			return 0;
+		}
 
-	private void initialise(Context context) {
-		if(!isInitialized){			
-			final float scale = getResources().getDisplayMetrics().density;
-			int width=getWidth();
-			int height=getHeight();
-			defaultFontSize = (int)(MIN_FONT_DIPS * scale + 0.5f);
+		private void paintInitialisation(){
 			fillScorePaint=new Paint(Paint.ANTI_ALIAS_FLAG);
 			fillScorePaint.setARGB(200, 75, 75, 75);
 			fillTrayPaint=new Paint();
@@ -293,239 +591,97 @@ public class BoardView extends View {
 				curWidth = 2;
 			}
 			tileStrokePaint.setStrokeWidth(curWidth);
-			setDimensions(calculateDimensions(width, height));
-			isInitialized=true;
-			tileIsMoved=false;
-			boardTileIsMoved=false;
-			switchMode=false;
-			stackOpen=false;
-			selectedTileNum=-1;
-			selectedBoardTileX=-1;
-			selectedBoardTileY=-1;
-			topLeftX=-1;
-			topLeftY=-1;
-			setFocusable(true);
 		}
 		
 	}
 	
-	private void drawTemplate(Canvas canvas){
-		Rect bRect=new Rect(0,getDimensions().getScoreHeight(),getDimensions().getTotalWidth(),getDimensions().getScoreHeight()+getDimensions().getBoardheight());
-		canvas.drawRect(bRect, fillBoardPaint);
-		Rect scRect=new Rect(0,0, getDimensions().getTotalWidth(),getDimensions().getTotalHeight()-getDimensions().getBoardheight()-getDimensions().getTrayHeight());
-		canvas.drawRect(scRect, fillScorePaint);
-		Rect tRect=new Rect(0,getDimensions().getScoreHeight()+getDimensions().getBoardheight(), getDimensions().getTotalWidth(),getDimensions().getTotalHeight());
-		canvas.drawRect(tRect, fillTrayPaint);
-		canvas.drawRect(scRect, fillScorePaint);
-		drawTray(canvas);
-		drawBoard(canvas);
-		drawScore(canvas);
-		drawMovingTile(canvas);
-		if(stackOpen){
-			drawStack(canvas, topLeftX, topLeftY, openStack);
-		}
-		if(ge.getBoard().isValidPlacement()) {
-			endTurn.setClickable(true);
-			endTurn.setImageResource(R.drawable.end_turn_available);
-		}
-		else {
-			endTurn.setClickable(false);
-			endTurn.setImageResource(R.drawable.end_turn);
-		}
+	
+	final Handler handler = new Handler() {
+        public void handleMessage(Message msg) {
+            boolean clickable=msg.getData().getBoolean("clickable");
+            if(clickable){
+            	endTurn.setClickable(true);
+				endTurn.setImageResource(R.drawable.end_turn_available);
+            } else {
+            	endTurn.setClickable(false);
+				endTurn.setImageResource(R.drawable.end_turn);
+            }
+        }
+    };
+    
+	public BoardView( Context context, AttributeSet attrs ) 
+    {
+        super(context, attrs);
+        
+        SurfaceHolder holder = getHolder();
+        holder.addCallback(this);
+        
+//        endTurn=(ImageButton)findViewById(R.id.endturn_button_horizontal);
+        thread=new DrawingThread(holder,handler);
+    }
+	
+	
+	@Override
+	public void surfaceChanged(SurfaceHolder holder, int format, int width,
+			int height) {
 	}
 	
-	private void drawStack(Canvas canvas, int topLeftX,int topLeftY, TileStack ts){
-		int size=ts.getSize();
-		int height=size*dimensions.getCellSize()+2*dimensions.getCellSize();
-		int width=dimensions.getCellSize()*2;
-		Tile t;
-		Rect paneRect=new Rect(topLeftX,topLeftY,topLeftX+width,topLeftY+height);
-		canvas.drawRect(paneRect, stackPanePaint);
-		stackPanePaint.setStyle(Paint.Style.STROKE);
-		stackPanePaint.setColor(Color.BLACK);
-		canvas.drawRect(paneRect, stackPanePaint);
-		stackPanePaint.setStyle(Paint.Style.FILL);
-		stackPanePaint.setARGB(255, 99, 120, 130);
-		canvas.drawText(stackMessage, topLeftX+width/2, topLeftY+dimensions.getCellSize()/2, stackTextPaint);
-		canvas.drawLine(topLeftX, topLeftY+dimensions.getCellSize()/2+4, topLeftX+width, topLeftY+dimensions.getCellSize()/2+4, stackTextPaint);
-		Iterator<Tile>iter=ts.getStackIterator();
-		int i=1;
-		float txtSize=stackTextPaint.getTextSize();
-		stackTextPaint.setTextAlign(Align.LEFT);
-		stackTextPaint.setTextSize(2*defaultFontSize);
-		while(iter.hasNext()){
-			t=iter.next();
-			canvas.drawText(Integer.toString(i), topLeftX+dimensions.getCellSize()/4 , topLeftY+i*dimensions.getCellSize()+5*dimensions.getCellSize()/6,
-					stackTextPaint);
-			drawTile(canvas, topLeftX+3*dimensions.getCellSize()/4, topLeftY+((size+1)-i)*dimensions.getCellSize(),
-					topLeftX+3*dimensions.getCellSize()/4+dimensions.getCellSize(), topLeftY+((size+1)-i)*dimensions.getCellSize()+dimensions.getCellSize(),
-					Character.toString(t.getLetter()));
-			i++;
-		}
-		stackTextPaint.setTextAlign(Align.CENTER);
-		stackTextPaint.setTextSize(txtSize);
+
+	@Override
+	public void surfaceCreated(SurfaceHolder holder) {
+		final float scale = getResources().getDisplayMetrics().density;
+		defaultFontSize = (int)(MIN_FONT_DIPS * scale + 0.5f);	
+		thread.setDefaultFontSize(defaultFontSize);
+		dimensions=calculateDimensions(getWidth(), getHeight());
+		thread.setDimensions(dimensions);
+		thread.setRunning(true);
+		thread.start();
 	}
 	
-	private void drawMovingTile(Canvas canvas){
-		if(tileIsMoved){
-			tileTextPaint.setTextSize(defaultFontSize*2);
-			drawTile(canvas, movingTileX-getDimensions().getCellSize()/2, movingTileY-getDimensions().getCellSize()/2, 
-					movingTileX+getDimensions().getCellSize()/2, movingTileY+getDimensions().getCellSize()/2,
-					Character.toString(movingTile.getLetter()));
-			if(getArea(movingTileX, movingTileY)==BOARD_AREA){
-				int i=findCellRow(movingTileY);
-				int j=findCellCol(movingTileX);
-				Board b=ge.getBoard();
-				if(b.canAddTile(i,j,movingTile))
-					underneathCellPaint.setColor(Color.GREEN);
-				else
-					underneathCellPaint.setColor(Color.RED);
-				int left=getDimensions().getPadding()+j*getDimensions().getCellSize();
-				int right=left+getDimensions().getCellSize();
-				int top=getDimensions().getScoreHeight()+i*getDimensions().getCellSize();
-				int bottom=top+getDimensions().getCellSize();
-				Rect underRect=new Rect(left, top, right, bottom);
-				canvas.drawRect(underRect, underneathCellPaint);
+	@Override
+	public void surfaceDestroyed(SurfaceHolder holder) {
+		boolean retry=true;
+		thread.setRunning(false);
+		while(retry){
+			try {
+				thread.join();
+				retry=false;
+			} catch (InterruptedException e){
+				
 			}
 		}
 	}
 	
-	
-	private int findCellRow(int y){
-		/*Needs y coordinate to find row*/
-		for(int i=0;i<BOARD_SIZE;i++){
-			if(y>=getDimensions().getScoreHeight()+i*getDimensions().getCellSize()&&
-					y<=getDimensions().getScoreHeight()+i*getDimensions().getCellSize()+getDimensions().getCellSize())
-				return i;
-		}
-		return 0;
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		int evt=event.getAction();
+		int x=(int)event.getX();
+		int y=(int)event.getY();
+		thread.setEventInfo(evt,x,y);
+		return true;
 	}
 	
-	private int findCellCol(int x){
-		/*Needs x coordinate to find column*/
-		for(int i=0;i<BOARD_SIZE;i++){
-			if(x>=getDimensions().getPadding()+i*getDimensions().getCellSize()&&
-					x<=getDimensions().getPadding()+i*getDimensions().getCellSize()+getDimensions().getCellSize())
-				return i;
-		}
-		return 0;
+	public void setEndTurn(ImageButton end){
+		endTurn=end;
+		endTurn.setClickable(false);
 	}
 	
-	private void drawScore(Canvas canvas)
-	{		
-		if(ge==null) return;
-		
-		int turn=ge.getPlayerTurn();
-		int NumOfPlayers=ge.getNumPlayers();
-		
-		int maxHeight=getDimensions().getScoreHeight();
-		float scoreWidth=getDimensions().getTotalWidth()/NumOfPlayers;
-		
-		scorePaint.setTextAlign(Align.CENTER);
-		
-		for(int i=0;i<NumOfPlayers;i++){
-			if(i==turn)
-				scorePaint.setTextSize(1.3f*defaultFontSize);
-			scorePaint.setColor(ge.getPlayer(i).getColor());
-			canvas.drawText(ge.getPlayer(i).getNickname()+":"+ge.getPlayer(i).getScore(),
-					i*scoreWidth+(scoreWidth/2) ,3*maxHeight/4, scorePaint);
-			scorePaint.setTextSize(defaultFontSize);
-		}
-
-	}
-	
-	private void drawTray(Canvas canvas){
-		
-		if(ge==null) return;
-		
-		int turn=ge.getPlayerTurn();
-		Tray t=ge.getPlayer(turn).getTray();
-		int tileSize=getDimensions().getTotalWidth()/Tray.TRAY_SIZE;
-		if(tileSize>=getDimensions().getTrayHeight())
-			tileSize=4*getDimensions().getTrayHeight()/5;
-		int bot_border=(getDimensions().getTrayHeight()-tileSize)/2;
-		int space=(getDimensions().getTotalWidth()-(tileSize*Tray.TRAY_SIZE))/(Tray.TRAY_SIZE+1);
-		tilesTray=new Rect[t.getNumUnusedTiles()]; 
-		for(int i=0;i<t.getNumUnusedTiles();i++){
-			if(t.getTile(i)==null) continue;
-			if(selectedTileNum==i)
-				tileFillPaint.setColor(Color.YELLOW);
-			tileTextPaint.setTextSize(defaultFontSize*3);
-			tilesTray[i]=drawTile(canvas, i*tileSize+(i+1)*space, getDimensions().getTotalHeight()-tileSize-bot_border, 
-					i*tileSize+(i+1)*space+tileSize, getDimensions().getTotalHeight()-bot_border, t.getTileLetter(i));
-			tileFillPaint.setColor(Color.WHITE);
-		}
-	}
-	
-	private Rect drawTile(Canvas canvas, int left, int top, int right, int bottom, String text){
-		Rect tileRect;
-		tileRect=new Rect(left, top, right, bottom);
-		canvas.drawRect(tileRect, tileFillPaint);
-		canvas.drawRect(tileRect, tileStrokePaint);
-		canvas.drawText(text,left+(right-left)/2,bottom-(bottom-top)/5, tileTextPaint);
-		return tileRect;
-	}
-	
-	private void drawBoard(Canvas canvas)
-	{
-		int bHeight=getDimensions().getBoardheight();
-		
-		int bWidth=bHeight;
-		int sHeight=getDimensions().getScoreHeight();
-		int padding=getDimensions().getPadding();
-		
-		int left=getDimensions().getPadding()+(BOARD_SIZE/2-1)*getDimensions().getCellSize();
-		int top=getDimensions().getScoreHeight()+(BOARD_SIZE/2-1)*getDimensions().getCellSize();
-		int bottom= 2*getDimensions().getCellSize()+top;
-		int right= 2*getDimensions().getCellSize()+left;
-		
-		Rect centralRect=new Rect(left, top, right, bottom);
-		canvas.drawRect(centralRect, centralSquarePaint);
-		
-		for(int i=0;i<11;i++)
-		{
-			int x=i*getDimensions().getCellSize();
-			canvas.drawLine(padding+x,sHeight,padding+x,sHeight+bHeight,strokePaint);
-		}
-		
-		for(int i=0;i<11;i++)
-		{
-			int y=i*getDimensions().getCellSize();
-			canvas.drawLine(padding,sHeight+y,padding+bWidth,sHeight+y,strokePaint);
-		}
-		
-		if(ge==null) return;
-		Board b=ge.getBoard();
-		TileStack [][] ts=b.getTilePlacement();
-		for(int i=0;i<ts.length;i++){
-			for(int j=0;j<ts[i].length;j++){
-				if(b.hasTile(i, j)){
-					if(selectedBoardTileX==i&&selectedBoardTileY==j)
-						tileFillPaint.setColor(Color.YELLOW);
-					else if(b.getTile(i, j).getAge()==ge.getBoard().getTurn())
-						tileFillPaint.setARGB(255, 160, 160, 200);
-					left=getDimensions().getPadding()+j*getDimensions().getCellSize();
-					right=left+getDimensions().getCellSize();
-					top=getDimensions().getScoreHeight()+i*getDimensions().getCellSize();
-					bottom=top+getDimensions().getCellSize();
-					tileTextPaint.setTextSize(2*defaultFontSize);
-					drawTile(canvas,left , top, right, bottom, Character.toString(ts[i][j].getTop().getLetter()));
-					tileFillPaint.setColor(Color.WHITE);
-				}
-			}
-		}
-		
-	}
-	
-	private int getArea(int x,int y){
-		if(y<=getDimensions().getScoreHeight())
-			return SCORE_AREA;
-		else if(y>getDimensions().getScoreHeight()&&
-				y<=getDimensions().getScoreHeight()+getDimensions().getBoardheight())
-			return BOARD_AREA;
-		else return TRAY_AREA;
+	public void setSwitchMode(boolean b) {
+		thread.setSwitchMode(b);
 	}
 
+	public Dimensions getDimensions() {
+		return dimensions;
+	}
+	
+	public void setGameEngine(GameEngine ge) {
+		thread.setGameEngine(ge);
+	}
+	
+	public void setPopupWindow(PopupWindow popUp) {
+		thread.setPopupWindow(popUp);
+	}
+	
 	private Dimensions calculateDimensions(int width,int height){
 		int cellSize,padding,top,bWidth,bHeight,scHeight,tHeight;
 		int maxCellSize;
@@ -565,36 +721,5 @@ public class BoardView extends View {
 		return dims;
 	}
 
-	public void setGameEngine(GameEngine ge) {
-		this.ge=ge;
-	}
-
-	public void setEndTurn(ImageButton endTurn) {
-		this.endTurn = endTurn;
-	}
-
-	public ImageButton getEndTurn() {
-		return endTurn;
-	}
-
-	public void setSwitchMode(boolean switchMode) {
-		this.switchMode = switchMode;
-	}
-
-	public boolean isSwitchMode() {
-		return switchMode;
-	}
-
-	public void setDimensions(Dimensions dimensions) {
-		this.dimensions = dimensions;
-	}
-
-	public Dimensions getDimensions() {
-		return dimensions;
-	}	
 	
-	public void setPopupWindow(PopupWindow pw){
-		this.pw=pw;
-	}
-
 }

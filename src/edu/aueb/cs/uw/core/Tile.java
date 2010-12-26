@@ -1,5 +1,6 @@
 package edu.aueb.cs.uw.core;
 
+
 public class Tile {
 
 	public static final int NO_PLAYER_ID=-1;
@@ -18,6 +19,15 @@ public class Tile {
 		this.setLetter(letter);
 		this.setPlayerID(0);
 		this.setAge(0);
+	}
+	
+	public Tile(Tile t){
+		this();
+		if(t!=null) {
+			this.setAge(t.getAge());
+			this.setLetter(t.getLetter());
+			this.setPlayerID(t.getPlayerID());			
+		}
 	}
 	
 	public Tile(){

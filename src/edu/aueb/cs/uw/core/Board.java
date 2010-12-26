@@ -1,6 +1,7 @@
 package edu.aueb.cs.uw.core;
 
 import java.util.LinkedList;
+import java.util.List;
 
 public class Board {
 	
@@ -73,6 +74,20 @@ public class Board {
 		setFirstWord(true);
 	}
 	
+	public Board(Board b){
+		board=new TileStack[BOARD_SIZE][BOARD_SIZE];
+		this.setFirstWord(b.isFirstWord());
+		this.setTurn(b.getTurn());
+		tilesAdded=new LinkedList<AddedTile>();
+		tilesAdded.addAll(b.getTilesAdded());
+		TileStack [][] ts=b.getTilePlacement();
+		for(int i=0;i<BOARD_SIZE;i++){
+			for(int j=0;j<BOARD_SIZE;j++){
+				board[i][j]=new TileStack(ts[i][j]);
+			}
+		}
+	}
+	
 	/**
 	 * If the placement of tiles is right
 	 * calculate the score of the player
@@ -86,6 +101,10 @@ public class Board {
 		score=getScore();
 		endTurn();
 		return score;
+	}
+	
+	public List<AddedTile> getTilesAdded(){
+		return tilesAdded;
 	}
 	
 	public int getScore(){

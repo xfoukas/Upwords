@@ -14,6 +14,11 @@ public class TileStack {
 		tileStack=new Stack<Tile>();
 	}
 	
+	public TileStack(TileStack ts){
+		tileStack=new Stack<Tile>();
+		tileStack.addAll(ts.getStack());
+	}
+	
 	public boolean removeTop(){
 		Tile t;
 		t=this.deleteTop();
@@ -36,6 +41,10 @@ public class TileStack {
 	
 	public Tile getTop(){
 		return (tileStack.isEmpty())?null:tileStack.peek();
+	}
+	
+	public Stack<Tile> getStack(){
+		return tileStack;
 	}
 	
 	public boolean addTile(Tile tile)

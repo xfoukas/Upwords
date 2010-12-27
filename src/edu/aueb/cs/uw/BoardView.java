@@ -669,10 +669,10 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
 		thread.setEventInfo(evt,x,y);
 		 try {
 		        Thread.sleep(16);
-		    } catch (InterruptedException e) {
-		        e.printStackTrace();
-		    }
-		    return true;
+		 } catch (InterruptedException e) {
+			 e.printStackTrace();
+		 }
+		 return true;
 	}
 	
 	public void setEndTurn(ImageButton end){

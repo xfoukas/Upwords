@@ -54,6 +54,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
 		
 		private int event;
 		private int eventX,eventY;
+		private int prevEventX,prevEventY;
 		
 		private Handler mHandler;
 		
@@ -93,6 +94,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
 			stackOpen=false;
 			openStack=new TileStack();
 			event=eventX=eventY=-1;
+			prevEventX=prevEventY=-1;
 			selectedTileNum=-1;
 			selectedBoardTileX=-1;
 			selectedBoardTileY=-1;
@@ -107,6 +109,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
 			ge=null;
 			tilesTray=new Rect[1];
 			paintInitialisation();
+			setFocusable(true);
 		}
 		
 		public void setRunning(boolean b){
@@ -173,6 +176,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
 		
 		private void updateGame() {
 			if(ge==null) return;
+
 			switch(event){
 			case MotionEvent.ACTION_DOWN:
 				int area=getArea(eventX, eventY);
@@ -195,6 +199,10 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
 				}
 				break;
 			case MotionEvent.ACTION_MOVE:
+				if(Math.abs(prevEventX-eventX)<dims.getCellSize()/20)
+					return;
+				if(Math.abs(prevEventY-eventY)<dims.getCellSize()/20)
+					return;
 				stackOpen=false;
 				openStack=null;
 				if(selectedTileNum!=-1){
@@ -277,7 +285,8 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
 			default:
 				break;	
 			}
-		
+			prevEventX=eventX;
+			prevEventY=eventY;
 		}
 
 		private void doDraw(Canvas canvas) {
@@ -658,7 +667,12 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
 		int x=(int)event.getX();
 		int y=(int)event.getY();
 		thread.setEventInfo(evt,x,y);
-		return true;
+		 try {
+		        Thread.sleep(16);
+		    } catch (InterruptedException e) {
+		        e.printStackTrace();
+		    }
+		    return true;
 	}
 	
 	public void setEndTurn(ImageButton end){

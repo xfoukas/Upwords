@@ -21,6 +21,8 @@
        android:layout_height="fill_parent"
        android:layout_weight="1"
        android:focusable="true"
+       android:clickable="true"
+       android:longClickable="true"
        android:drawSelectorOnTop="false"/>
        
      <LinearLayout android:id="@+id/toolbar_horizontal"

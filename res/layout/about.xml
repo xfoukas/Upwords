@@ -2,7 +2,9 @@
 
 <AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:background="@drawable/fst738t3zznyqf"
+    >
     
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
@@ -10,36 +12,63 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     >
+
+
+    
+<View
+        android:background="@drawable/upwordsabout"
+        android:layout_width="200px"
+        android:id="@+id/aboutview1"
+        android:layout_height="150px"
+        android:layout_marginBottom="90dip"
+        android:layout_weight="1"/>    
+    
     
 <TextView
         android:text="Anastasios Litsas-Alexis"
-        android:textSize="8pt"
+        android:textColor="#000000"
+        android:textSize="10pt"
+        android:id="@+id/textview1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        
+        />
           
 <TextView
         android:text="die_hard_14.75_beta_2_service_pack_38@hotmail.com"
         android:textSize="6pt"
+        android:id="@+id/textview2"
+        android:textColor="#000000"
         android:autoLink="email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        
+        />
         
 <TextView
         android:text="Xenofon Foukas"
-        android:textSize="8pt"
+        android:textColor="#000000"
+        android:id="@+id/textview3"
+        android:textSize="10pt"
         android:layout_width="wrap_content"
+        
         android:layout_height="wrap_content"
         android:layout_weight="1"/>
         
 <TextView
         android:text="asounsao@hotmail.com"
+        android:textColor="#000000"
+        android:id="@+id/textview4"
         android:textSize="6pt"
+        
         android:autoLink="email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"/>
+
+
 
 </LinearLayout>
 

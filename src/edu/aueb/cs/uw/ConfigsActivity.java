@@ -2,11 +2,13 @@
 package edu.aueb.cs.uw;
 
 import java.util.Arrays;
-
-import android.util.Log;
+import java.util.LinkedList;
 import edu.aueb.cs.uw.core.GameConfigs;
+import android.app.AlertDialog;
 import android.app.TabActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -27,6 +29,8 @@ public class ConfigsActivity extends TabActivity implements OnClickListener ,OnI
 	int [] color,colorForConstructor;
 	String [] colors={"White","Pink","Orange","Red","Green","Blue","Black","Yellow"};
 	int [] colorCodes={-1,Color.rgb(255,105,180),Color.rgb(255,140,0),-65536,-16711936,-16776961,-16777216,-256};
+	LinkedList<ArrayAdapter<String>> adapter;
+	LinkedList<String> colorList;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState)
@@ -39,24 +43,43 @@ public class ConfigsActivity extends TabActivity implements OnClickListener ,OnI
 		    Arrays.fill(color,0);
 		    numOfPlayers=0;
 		    widget=new View [4][7];
+		    adapter=new LinkedList<ArrayAdapter<String>>();
+		    colorList=new LinkedList<String>();
 		    
+		    Resources r=getResources();
+		    String [] colors_array=r.getStringArray(R.array.colors_array);
+		    
+		    colorList.addAll(Arrays.asList(colors_array));
+		    /*
+		    adapter.add(ArrayAdapter.createFromResource(this, R.array.colors_array, android.R.layout.simple_spinner_item));
+		    adapter.add(ArrayAdapter.createFromResource(this, R.array.colors_array, android.R.layout.simple_spinner_item));
+		    adapter.add(ArrayAdapter.createFromResource(this, R.array.colors_array, android.R.layout.simple_spinner_item));
+		    adapter.add(ArrayAdapter.createFromResource(this, R.array.colors_array, android.R.layout.simple_spinner_item));*/
+		    
+		    adapter.add(new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,colorList));
+		    adapter.add(new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,colorList));
+		    adapter.add(new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,colorList));
+		    adapter.add(new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,colorList));
+		  /*  LinkedList<View> l=null;
+		    new ArrayAdapter<View>(this,android.R.layout.simple_spinner_item,l);*/
+		    System.out.println("the adapters are set in the list");
 		    takeViewReferences();		    
 		    
-		    ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(this, R.array.colors_array, android.R.layout.simple_spinner_item);
-		    adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		    ((Spinner)widget[0][4]).setAdapter(adapter1);
+		  
+		    adapter.get(0).setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		    ((Spinner)widget[0][4]).setAdapter(adapter.get(1));
 		    
-		    ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(this, R.array.colors_array, android.R.layout.simple_spinner_item);
-		    adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		    ((Spinner)widget[1][4]).setAdapter(adapter2);		    
+		    
+		    adapter.get(1).setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		    ((Spinner)widget[1][4]).setAdapter(adapter.get(1));		    
             
-		    ArrayAdapter<CharSequence> adapter3 = ArrayAdapter.createFromResource(this, R.array.colors_array, android.R.layout.simple_spinner_item);
-		    adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		    ((Spinner)widget[2][4]).setAdapter(adapter3);
 		    
-		    ArrayAdapter<CharSequence> adapter4 = ArrayAdapter.createFromResource(this, R.array.colors_array, android.R.layout.simple_spinner_item);
-		    adapter4.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		    ((Spinner)widget[3][4]).setAdapter(adapter4);
+		    adapter.get(2).setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		    ((Spinner)widget[2][4]).setAdapter(adapter.get(2));
+		    
+		    
+		    adapter.get(3).setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		    ((Spinner)widget[3][4]).setAdapter(adapter.get(3));
 
 		    TabHost th = getTabHost();	    
 		    
@@ -70,7 +93,16 @@ public class ConfigsActivity extends TabActivity implements OnClickListener ,OnI
 		    tabEnabled(false,0);
 		    tabEnabled(false,1);
 		    tabEnabled(false,2);
-		    tabEnabled(false,3);		    
+		    tabEnabled(false,3);	
+		    
+		    for(int i=0;i<4;i++)
+		    {
+		    	((EditText)widget[i][2]).setText("Player_"+(i+1));
+		    	
+		    	((Spinner)widget[i][4]).setSelection(i);System.out.println("******************eklithei i setSelection");
+			    color[i]=wordToNumberColor((String)adapter.get(i).getItem(i));
+			    removeColorFromOthers((String)adapter.get(i).getItem(i),i);			    
+		    }		    
 		    
 		    widget[0][0].setOnClickListener(this);
 		    widget[1][0].setOnClickListener(this);
@@ -156,46 +188,104 @@ public class ConfigsActivity extends TabActivity implements OnClickListener ,OnI
 		   case R.id.begin_game3:
 		   case R.id.begin_game4: 
 			   
+			   numOfPlayers=0;
 			   for(int i=0;i<4;i++)
 			   {
 				   if(((CheckBox)widget[i][0]).isChecked())
-				   {
-					   name[i]=((EditText)widget[i][2]).getText().toString();
-					   numOfPlayers=numOfPlayers+1;
+				   {					  
+				       name[i]=((EditText)widget[i][2]).getText().toString();					   
+					   numOfPlayers=numOfPlayers+1; 
 				   }
 			   }
 			   
-			   nameForConstructor=new String [numOfPlayers];
-			   colorForConstructor=new int [numOfPlayers];
+			   boolean sameName=false;
 			   
-			   Log.d("stoixeia paikton prota :","names: "+name[0]+"-"+name[1]+"-"+name[2]+"-"+name[3]+" colors: "+color[0]+"-"+color[1]+"-"+color[2]+"-"+color[3]);
-			   
-			   for(int i=0;i<numOfPlayers;i++)
+			   loop2:
+			   for(int i=0;i<4;i++)
 			   {
 				   for(int j=0;j<4;j++)
 				   {
-					   if(name[j]!=null&&nameForConstructor[i]==null)
+					   if(i!=j&&name[i]!=null&&name[j]!=null&&name[i].equals(name[j]))
 					   {
-						   nameForConstructor[i]=name[j];
-						   name[j]=null;
-					   }
-					   
-					   if(color[j]!=0&&colorForConstructor[i]==0)
-					   {
-						   colorForConstructor[i]=color[j];
-						   color[j]=0;
+						   sameName=true;
+						   break loop2;
 					   }
 				   }
 			   }
 			   
-			   Intent gameIntent = new Intent(this,BoardActivity.class);
-       		
-       		   Bundle b = new Bundle();
-       		   
-               b.putParcelable("edu.aueb.cs.uw.core.GameConfigs",new GameConfigs(this.numOfPlayers,nameForConstructor,colorForConstructor));
-       		   gameIntent.putExtras(b);
-       		   startActivity(gameIntent);
-			   break;
+			   if(sameName)
+			   {
+				   showDialog("No players can have the same name.");
+				   break;
+			   }
+			   else
+			   {
+				   boolean wrongName=false;
+				   
+				   loop1:
+				   for(int i=0;i<4;i++)
+				   {
+					   if(((CheckBox)widget[i][0]).isChecked()&&(((EditText)widget[i][2]).getText().toString()).equals("")||(((EditText)widget[i][2]).getText().toString()).indexOf(' ')!=-1)
+					   {
+						   showDialog("You did not define some player's name or you included a space in it.");
+						   wrongName=true;
+						   break loop1;
+					   }
+				   }
+				   
+				   if(!wrongName)
+				   {
+					   if(numOfPlayers<2)
+					   {
+						   showDialog("At least two players must be enabled.");
+						   
+						   break;
+					   }
+					   else
+					   {
+						   nameForConstructor=new String [numOfPlayers];
+						   colorForConstructor=new int [numOfPlayers];
+						   Arrays.fill(colorForConstructor,0);
+						   
+						   for(int i=0;i<numOfPlayers;i++)
+						   {
+							   for(int j=0;j<4;j++)
+							   {
+								   if(((CheckBox)widget[j][0]).isChecked()&&name[j]!=null&&nameForConstructor[i]==null)
+								   {
+									   nameForConstructor[i]=name[j];
+									   name[j]=null;
+								   }
+								   
+								   if(((CheckBox)widget[j][0]).isChecked()&&color[j]!=0&&colorForConstructor[i]==0)
+								   {
+									   colorForConstructor[i]=color[j];
+									   color[j]=0;
+								   }
+							   }
+						   }						   
+						   
+						   
+						   Intent gameIntent = new Intent(this,BoardActivity.class);
+					      		
+				       	   Bundle b = new Bundle();
+				       	   
+				           b.putParcelable("edu.aueb.cs.uw.core.GameConfigs",new GameConfigs(this.numOfPlayers,nameForConstructor,colorForConstructor));
+				               
+				           Arrays.fill(name,null);
+				           Arrays.fill(color,0);
+				               
+				       	   gameIntent.putExtras(b);
+				       	   startActivity(gameIntent);						   					   
+					   }
+				   }
+				   
+				   if(wrongName)
+				   {
+					   break;
+				   }
+			   }			   
+			   
 		   case R.id.cancel1:
 		   case R.id.cancel2:
 		   case R.id.cancel3:
@@ -210,7 +300,39 @@ public class ConfigsActivity extends TabActivity implements OnClickListener ,OnI
 	{
 		String colorString=p.getItemAtPosition(place).toString();
 		
-		int colorCode=1;
+		int colorCode=wordToNumberColor(colorString);
+		
+		int id=p.getId();
+		
+		switch(id)
+		{
+		    case R.id.spinner1: 
+		    restorePreviousColorToOthers(0);	
+		    color[0]=colorCode;
+		    removeColorFromOthers(colorString,0);
+		    
+		    break;
+		    case R.id.spinner2: 
+		    restorePreviousColorToOthers(1);	
+		    color[1]=colorCode; 
+		    removeColorFromOthers(colorString,1);
+		    break;
+		    case R.id.spinner3:
+		    restorePreviousColorToOthers(2);	
+		    color[2]=colorCode; 
+		    removeColorFromOthers(colorString,2);
+		    break;
+		    case R.id.spinner4: 
+		    restorePreviousColorToOthers(3);	
+		    color[3]=colorCode; 
+		    removeColorFromOthers(colorString,3);
+		    break;
+		}
+	}
+	
+	private int wordToNumberColor(String colorString)
+	{
+        int colorCode=1;
 		
 		for(int i=0;i<8;i++)
 		{
@@ -220,14 +342,38 @@ public class ConfigsActivity extends TabActivity implements OnClickListener ,OnI
 			}
 		}
 		
-		int id=p.getId();
-		
-		switch(id)
+		return colorCode;
+	}
+	
+	private void removeColorFromOthers(String color,int spinner)
+	{
+		for(int i=0;i<4;i++)
 		{
-		    case R.id.spinner1: color[0]=colorCode; break;
-		    case R.id.spinner2: color[1]=colorCode; break;
-		    case R.id.spinner3: color[2]=colorCode; break;
-		    case R.id.spinner4: color[3]=colorCode; break;
+			if(i!=spinner)
+			{
+				adapter.get(i).remove(color);
+			}
+		}
+	}
+	
+	private void restorePreviousColorToOthers(int spinner)
+	{
+		int index=0;
+		
+		for(int i=0;i<8;i++)
+		{
+			if(colorCodes[i]==color[spinner])
+			{
+				index=i;
+			}
+		}
+		
+		for(int i=0;i<4;i++)
+		{
+			if(i!=spinner)
+			{
+				adapter.get(i).add(colors[index]);
+			}
 		}
 	}
 
@@ -239,19 +385,52 @@ public class ConfigsActivity extends TabActivity implements OnClickListener ,OnI
 	
 	private void tabEnabled(boolean enable,int tabId)
 	{
-		for(int i=1;i<7;i++)
-		{
-			widget[tabId][i].setEnabled(enable);
+		for(int i=1;i<6;i++)
+		{		
+			if(i==5&&!enable)
+			{
+				if(allOtherTabsUnchecked(tabId))
+				{					
+					for(int j=0;j<4;j++)
+					{
+						widget[j][i].setEnabled(enable);
+					}
+				}
+			}
+			else
+			{
+				widget[tabId][i].setEnabled(enable);
+			}
 		}
 		
 		if(enable)
 		{
 			widget[tabId][2].setBackgroundColor(Color.WHITE);
+			
+			for(int i=0;i<4;i++)
+			{
+				if(i!=tabId)
+				{
+				    widget[i][5].setEnabled(true);
+				}
+			}
 		}
 		else
 		{
 			widget[tabId][2].setBackgroundColor(Color.GRAY);
 		}
+	}
+	private boolean allOtherTabsUnchecked(int tabId)
+	{
+		for(int i=0;i<4;i++)
+		{
+			if(i!=tabId&&((CheckBox)widget[i][0]).isChecked())
+			{
+				return false;
+			}
+		}
+		
+		return true;
 	}
 	
 	private void takeViewReferences()
@@ -284,5 +463,22 @@ public class ConfigsActivity extends TabActivity implements OnClickListener ,OnI
 	    widget[2][3]=findViewById(R.id.tv3b);
 	    widget[3][1]=findViewById(R.id.tv4);
 	    widget[3][3]=findViewById(R.id.tv4b);
+	}
+	
+	private void showDialog(String text)
+	{
+		AlertDialog.Builder b=new AlertDialog.Builder(this);
+		   b.setMessage(text);
+		   b.setCancelable(false);
+		   b.setPositiveButton("OK",new DialogInterface.OnClickListener()
+		   {
+			   public void onClick(DialogInterface d,int id)
+			   {
+				   d.cancel();
+			   }
+		   });
+		   
+		   AlertDialog a=b.create();
+		   a.show();
 	}
 }

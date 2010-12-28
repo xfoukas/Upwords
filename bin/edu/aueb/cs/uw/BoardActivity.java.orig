@@ -226,6 +226,9 @@ public class BoardActivity extends Activity
         
     }
     
+<<<<<<< HEAD
+   
+=======
     @Override
     public boolean onCreateOptionsMenu(Menu m) 
     {
@@ -297,4 +300,5 @@ public class BoardActivity extends Activity
 		return super.onOptionsItemSelected(mi);
     }
     
+>>>>>>> 5d61b9983a713c449be095cc117da88809f8f097
 }

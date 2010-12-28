@@ -5,9 +5,13 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
@@ -222,5 +226,79 @@ public class BoardActivity extends Activity
         
     }
     
+<<<<<<< HEAD
    
+=======
+    @Override
+    public boolean onCreateOptionsMenu(Menu m) 
+    {
+        MenuInflater i=getMenuInflater();
+        i.inflate(R.menu.options_menu, m);
+        
+        return true;
+    }
+    
+    public boolean onOptionsItemSelected(MenuItem mi)
+    {
+    	switch(mi.getItemId())
+    	{
+    	    case R.id.new_gameb:
+    	    	
+    	    	Intent startGameIntent = new Intent(this,ConfigsActivity.class);
+        		startActivity(startGameIntent);
+        		this.finish();
+    	    	break;
+    	    	
+    	    case R.id.quick_startb:
+    	    	
+    	    	Intent quickGameIntent = new Intent(this,BoardActivity.class);
+        		Bundle b = new Bundle();
+                b.putParcelable("edu.aueb.cs.uw.core.GameConfigs",new GameConfigs());
+        		quickGameIntent.putExtras(b);
+        		startActivity(quickGameIntent);
+    	    	this.finish();
+    	    	break;
+    	    	
+    	    case R.id.aboutb:
+    	    	
+    	    	Intent aboutIntent = new Intent(this,AboutActivity.class);
+        		startActivity(aboutIntent);
+    	    	
+    	    	break;
+    	    	
+    	    case R.id.exitb:
+    	    	
+    	    	AlertDialog.Builder bu=new AlertDialog.Builder(this);
+        		bu.setMessage("Are you sure you want to exit?");
+        		bu.setCancelable(false);
+        		bu.setPositiveButton("Yes", new DialogInterface.OnClickListener() 
+        		{
+        		           public void onClick(DialogInterface d, int id) 
+        		           {
+        		                BoardActivity.this.finish();
+        		           }
+        		});
+        		
+        		bu.setNegativeButton("No", new DialogInterface.OnClickListener() 
+        		{
+        		           public void onClick(DialogInterface d, int id)
+        		           {
+        		                d.cancel();
+        		           }
+        		});
+        		
+        		AlertDialog a=bu.create();
+        		a.show();
+    	    	
+    	    	break;
+    	    	
+    	    default: 
+    	    	
+    	    	return super.onOptionsItemSelected(mi);
+    	}
+    	
+		return super.onOptionsItemSelected(mi);
+    }
+    
+>>>>>>> 5d61b9983a713c449be095cc117da88809f8f097
 }

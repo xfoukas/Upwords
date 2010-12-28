@@ -13,14 +13,14 @@
     
 <TextView
         android:text="Anastasios Litsas-Alexis"
-        android:textSize="16pt"
+        android:textSize="8pt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"/>
           
 <TextView
         android:text="die_hard_14.75_beta_2_service_pack_38@hotmail.com"
-        android:textSize="10pt"
+        android:textSize="6pt"
         android:autoLink="email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -28,14 +28,14 @@
         
 <TextView
         android:text="Xenofon Foukas"
-        android:textSize="16pt"
+        android:textSize="8pt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"/>
         
 <TextView
         android:text="asounsao@hotmail.com"
-        android:textSize="10pt"
+        android:textSize="6pt"
         android:autoLink="email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

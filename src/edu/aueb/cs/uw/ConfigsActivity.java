@@ -30,7 +30,7 @@ public class ConfigsActivity extends TabActivity implements OnClickListener ,OnI
 	String [] colors={"White","Pink","Orange","Red","Green","Blue","Black","Yellow"};
 	int [] colorCodes={-1,Color.rgb(255,105,180),Color.rgb(255,140,0),-65536,-16711936,-16776961,-16777216,-256};
 	LinkedList<ArrayAdapter<String>> adapter;
-	LinkedList<String> colorList;
+	LinkedList<LinkedList<String>> l;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState)
@@ -44,30 +44,30 @@ public class ConfigsActivity extends TabActivity implements OnClickListener ,OnI
 		    numOfPlayers=0;
 		    widget=new View [4][7];
 		    adapter=new LinkedList<ArrayAdapter<String>>();
-		    colorList=new LinkedList<String>();
+		    l=new LinkedList<LinkedList<String>>();
+		    
+		    l.add(new LinkedList<String>());
+		    l.add(new LinkedList<String>());
+		    l.add(new LinkedList<String>());
+		    l.add(new LinkedList<String>());	    
 		    
 		    Resources r=getResources();
-		    String [] colors_array=r.getStringArray(R.array.colors_array);
+		    String [] colors_array=r.getStringArray(R.array.colors_array);		    
 		    
-		    colorList.addAll(Arrays.asList(colors_array));
-		    /*
-		    adapter.add(ArrayAdapter.createFromResource(this, R.array.colors_array, android.R.layout.simple_spinner_item));
-		    adapter.add(ArrayAdapter.createFromResource(this, R.array.colors_array, android.R.layout.simple_spinner_item));
-		    adapter.add(ArrayAdapter.createFromResource(this, R.array.colors_array, android.R.layout.simple_spinner_item));
-		    adapter.add(ArrayAdapter.createFromResource(this, R.array.colors_array, android.R.layout.simple_spinner_item));*/
+		    l.get(0).addAll(Arrays.asList(colors_array));
+		    l.get(1).addAll(Arrays.asList(colors_array));
+		    l.get(2).addAll(Arrays.asList(colors_array));
+		    l.get(3).addAll(Arrays.asList(colors_array));		    
 		    
-		    adapter.add(new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,colorList));
-		    adapter.add(new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,colorList));
-		    adapter.add(new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,colorList));
-		    adapter.add(new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,colorList));
-		  /*  LinkedList<View> l=null;
-		    new ArrayAdapter<View>(this,android.R.layout.simple_spinner_item,l);*/
-		    System.out.println("the adapters are set in the list");
-		    takeViewReferences();		    
-		    
+		    adapter.add(new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,l.get(0)));
+		    adapter.add(new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,l.get(1)));
+		    adapter.add(new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,l.get(2)));
+		    adapter.add(new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,l.get(3)));		 
+		   
+		    takeViewReferences();		    		    
 		  
 		    adapter.get(0).setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		    ((Spinner)widget[0][4]).setAdapter(adapter.get(1));
+		    ((Spinner)widget[0][4]).setAdapter(adapter.get(0));
 		    
 		    
 		    adapter.get(1).setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -99,7 +99,7 @@ public class ConfigsActivity extends TabActivity implements OnClickListener ,OnI
 		    {
 		    	((EditText)widget[i][2]).setText("Player_"+(i+1));
 		    	
-		    	((Spinner)widget[i][4]).setSelection(i);System.out.println("******************eklithei i setSelection");
+		    	((Spinner)widget[i][4]).setSelection(i);
 			    color[i]=wordToNumberColor((String)adapter.get(i).getItem(i));
 			    removeColorFromOthers((String)adapter.get(i).getItem(i),i);			    
 		    }		    
@@ -352,6 +352,7 @@ public class ConfigsActivity extends TabActivity implements OnClickListener ,OnI
 			if(i!=spinner)
 			{
 				adapter.get(i).remove(color);
+				l.get(i).remove(color);
 			}
 		}
 	}
@@ -373,6 +374,7 @@ public class ConfigsActivity extends TabActivity implements OnClickListener ,OnI
 			if(i!=spinner)
 			{
 				adapter.get(i).add(colors[index]);
+				l.get(i).add(colors[index]);
 			}
 		}
 	}
@@ -420,6 +422,7 @@ public class ConfigsActivity extends TabActivity implements OnClickListener ,OnI
 			widget[tabId][2].setBackgroundColor(Color.GRAY);
 		}
 	}
+	
 	private boolean allOtherTabsUnchecked(int tabId)
 	{
 		for(int i=0;i<4;i++)

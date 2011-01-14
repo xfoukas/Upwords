@@ -276,7 +276,7 @@ public class ConfigsActivity extends TabActivity implements OnClickListener ,OnI
 				           Arrays.fill(color,0);
 				               
 				       	   gameIntent.putExtras(b);
-				       	   SoundManager.pauseSound(1);
+				       	   SoundManager.stopSound(1);
 				       	   startActivity(gameIntent);						   					   
 					   }
 				   }

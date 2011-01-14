@@ -1,5 +1,9 @@
 package edu.aueb.cs.uw.core;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
 public class GameEngine {
 	
 	private GameConfigs gc;
@@ -8,7 +12,8 @@ public class GameEngine {
 	private Board board;
 	private int playerTurn;
 	private int gaveUpTurn;
-	
+	private long startTime;
+	private SimpleDateFormat dateFormat;
 	
 	public GameEngine(GameConfigs gc){
 		this.gc=gc;
@@ -18,11 +23,13 @@ public class GameEngine {
 			players[i].setPlayerID(i);
 			players[i].setPool(getTp());
 		}
+		dateFormat=new SimpleDateFormat("HH:mm:ss");
 		setBoard(new Board());
 		setGaveUpTurn(0);
 	}
 	
 	public void beginGame(int firstPlayer){
+		startTime = System.currentTimeMillis();
 		playerTurn=firstPlayer;
 		for(int i=0;i<players.length;i++)
 			players[i].getTray().fillTray();
@@ -143,5 +150,13 @@ public class GameEngine {
 
 	public TilePool getTp() {
 		return tp;
+	}
+	
+	public String getTimePlayed(){
+		long currTime=System.currentTimeMillis();
+		dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+		long elapsed = currTime-startTime;
+		String time=dateFormat.format(new Date(elapsed));
+		return time;
 	}
 }

@@ -57,7 +57,7 @@ public class Upwords extends Activity {
         		Bundle b = new Bundle();
                 b.putParcelable("edu.aueb.cs.uw.core.GameConfigs",new GameConfigs());
         		quickGameIntent.putExtras(b);
-        		SoundManager.pauseSound(1);
+        		SoundManager.stopSound(1);
         		startActivity(quickGameIntent);
         	}
         	
@@ -82,7 +82,7 @@ public class Upwords extends Activity {
         		       .setCancelable(false)
         		       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
         		           public void onClick(DialogInterface dialog, int id) {
-        		        	    SoundManager.pauseSound(1);
+        		        	    SoundManager.stopSound(1);
         		        		SoundManager.cleanup();
         		                Upwords.this.finish();
         		           }

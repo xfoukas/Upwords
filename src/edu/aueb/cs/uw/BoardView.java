@@ -240,6 +240,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
 								t.addTempRemovedTile(movingTile, selectedTileNum);
 								t.useTile(selectedTileNum);
 							}
+							SoundManager.playSound(2, 1, 0);
 						}
 						else {
 							if(boardTileIsMoved) {
@@ -248,20 +249,25 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
 							else {
 								t.addTempRemovedTile(movingTile, selectedTileNum);
 							}
+							SoundManager.playSound(3, 1, 0);
 						}
 					} else if(getArea(eventX, eventY)==TRAY_AREA) {
 						if(boardTileIsMoved) {
 							t.addTile(movingTile);
+							SoundManager.playSound(3, 1, 0);
 						}
 						else if(selectedTileNum!=-1) {
-							t.addTempRemovedTile(movingTile, selectedTileNum); 
+							t.addTempRemovedTile(movingTile, selectedTileNum);
+							SoundManager.playSound(3, 1, 0);
 						}
 					} else{
 						if(selectedTileNum!=-1) {
-							t.addTempRemovedTile(movingTile, selectedTileNum); 
+							t.addTempRemovedTile(movingTile, selectedTileNum);
+							SoundManager.playSound(3, 1, 0);
 						}
 						else if(selectedBoardTileX!=-1&&selectedBoardTileY!=-1) {
 							b.addTile(movingTile, selectedBoardTileX, selectedBoardTileY);
+							SoundManager.playSound(3, 1, 0);
 						}
 					}
 					if(ge.getBoard().isValidPlacement()){

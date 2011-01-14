@@ -47,7 +47,7 @@ public class SoundManager
 	
 	public static void loadSounds()
 	{
-		sm.put(1,sp.load(c,R.raw.wwwsoundbytercomelectroniccminorarpeggio,1));
+		sm.put(1,sp.load(c,/*name of sound file*/,1));
 	}
 	
 	public static void playSound(int i,float s,int loop)

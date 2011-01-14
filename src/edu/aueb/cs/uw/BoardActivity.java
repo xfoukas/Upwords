@@ -230,7 +230,7 @@ public class BoardActivity extends Activity
     public boolean onCreateOptionsMenu(Menu m) 
     {
         MenuInflater i=getMenuInflater();
-        i.inflate(R.menu.options_menu, m);
+        i.inflate(R.menu.options_menu2, m);
         
         return true;
     }
@@ -238,28 +238,17 @@ public class BoardActivity extends Activity
     public boolean onOptionsItemSelected(MenuItem mi)
     {
     	switch(mi.getItemId())
-    	{
-    	    case R.id.new_gameb:
+    	{    	    	
+    	    case R.id.scoreb:
     	    	
-    	    	Intent startGameIntent = new Intent(this,ConfigsActivity.class);
-        		startActivity(startGameIntent);
-        		this.finish();
-    	    	break;
+    	    	String text="";
     	    	
-    	    case R.id.quick_startb:
+    	    	for(int i=0;i<ge.getNumPlayers();i++)
+    	    	{
+    	    		text=text+ge.getPlayer(i).getNickname()+"    "+ge.getPlayer(i).getScore()+"\n";
+    	    	}
     	    	
-    	    	Intent quickGameIntent = new Intent(this,BoardActivity.class);
-        		Bundle b = new Bundle();
-                b.putParcelable("edu.aueb.cs.uw.core.GameConfigs",new GameConfigs());
-        		quickGameIntent.putExtras(b);
-        		startActivity(quickGameIntent);
-    	    	this.finish();
-    	    	break;
-    	    	
-    	    case R.id.aboutb:
-    	    	
-    	    	Intent aboutIntent = new Intent(this,AboutActivity.class);
-        		startActivity(aboutIntent);
+    	    	showDialog(text,"Score");
     	    	
     	    	break;
     	    	
@@ -272,6 +261,7 @@ public class BoardActivity extends Activity
         		{
         		           public void onClick(DialogInterface d, int id) 
         		           {
+        		        	   SoundManager.playSound(1,1,-1);
         		                BoardActivity.this.finish();
         		           }
         		});
@@ -297,4 +287,21 @@ public class BoardActivity extends Activity
 		return super.onOptionsItemSelected(mi);
     }
     
+    private void showDialog(String text,String title)
+	{
+		AlertDialog.Builder b=new AlertDialog.Builder(this);
+		   b.setMessage(text);
+		   b.setCancelable(false);
+		   b.setPositiveButton("OK",new DialogInterface.OnClickListener()
+		   {
+			   public void onClick(DialogInterface d,int id)
+			   {
+				   d.cancel();
+			   }
+		   });
+		   
+		   AlertDialog a=b.create();
+		   a.setTitle(title);
+		   a.show();
+	}
 }

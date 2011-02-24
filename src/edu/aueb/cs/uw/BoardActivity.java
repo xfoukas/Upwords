@@ -2,7 +2,6 @@ package edu.aueb.cs.uw;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -17,7 +16,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.PopupWindow;
-import android.widget.TextView;
+import android.widget.Toast;
 import edu.aueb.cs.uw.core.GameConfigs;
 import edu.aueb.cs.uw.core.GameEngine;
 import edu.aueb.cs.uw.core.Player;
@@ -47,7 +46,7 @@ public class BoardActivity extends Activity
         int numPlayers=players.length;
         Tile firstTile []=new Tile[numPlayers];
         for(int i=0;i<numPlayers;i++)
-        	firstTile[i]=ge.getTp().getTile();
+        	firstTile[i]=players[i].getTray().getTile(0);
         int firstPlayer=0;
         char smallestLetter=firstTile[0].getLetter();
         for (int i=0;i<numPlayers;i++) {
@@ -60,27 +59,12 @@ public class BoardActivity extends Activity
         for(int i=0;i<numPlayers;i++)
         	process+=players[i].getNickname()+" got letter "+firstTile[i].getLetter()+"\n";
         process+="\n"+players[firstPlayer].getNickname()+" begins the game";
-        for(int i=0;i<numPlayers;i++)
-        	ge.getTp().putTile(firstTile[i]);
         
-        final Dialog dialog = new Dialog(this);
-        dialog.setCancelable(true);
-        dialog.setContentView(R.layout.new_game_dialog);
-        dialog.setTitle("New Game");
-
-        TextView text = (TextView) dialog.findViewById(R.id.info_text);
-        text.setText(process);
         
-        Button button = (Button) dialog.findViewById(R.id.info_ok);
-        button.setOnClickListener(new OnClickListener() {
-        @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
+        Context context = this;
+        int duration = Toast.LENGTH_LONG;
+        Toast.makeText(context, process, duration).show();
         
-        dialog.show();
         
         ge.beginGame(firstPlayer);
       

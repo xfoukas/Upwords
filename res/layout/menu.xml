@@ -23,16 +23,6 @@ android:id="@+id/widget35"
 android:layout_width="wrap_content"
 android:layout_height="wrap_content"/>
 
-<TextView
-android:id="@+id/widget35"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"/>
-
-<TextView
-android:id="@+id/widget35"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"/>
-
 <Button
 android:id="@+id/new_game"
 android:layout_width="200px"
@@ -45,6 +35,12 @@ android:id="@+id/quick_start"
 android:layout_width="200px"
 android:layout_height="wrap_content"
 android:text="@string/quick_start"
+android:layout_gravity="center_horizontal"/>
+<Button
+android:id="@+id/instructions"
+android:layout_width="200px"
+android:layout_height="wrap_content"
+android:text="Instructions"
 android:layout_gravity="center_horizontal"/>
 <Button
 android:id="@+id/about"
@@ -60,4 +56,9 @@ android:layout_height="wrap_content"
 android:text="@string/exit"
 android:layout_gravity="center_horizontal"
 />
+<CheckBox android:id="@+id/sound"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_gravity="left"
+android:text="Sound on" />
 </LinearLayout>

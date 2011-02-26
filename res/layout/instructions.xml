@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+>
+	<ScrollView
+	android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+	>
+	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+		<TextView
+			android:id="@+id/instructions_text"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="How to play:\n\nEach player is given seven random letters at the beginning of the game.The first one who plays has to form a word horizontally or vertically and at least one of the letters of the word has to be in one of the four middle squares.Whenever it is your turn to play ,you have to form a word by connecting a new word with a letter of a previous one or by pilling one or more letters on top of an existing word to change it.You cannot place a letter on top of another letter of the same kind.After that ,the next player's turn comes.\n\nWord rules:\n\n1. If a word is in the dictionary ,then it can be used.Names ,abbreviations and initials are not allowed.\n2. All words must be in horizontal or vertical alignment ,diagonal alignment is not allowed.\n3. If you connect the letters of a new word with letters that contribute to more than one words or if you change letters that contribute to more than one words ,all new words must be acceptable according to the word rules.\n4. The maximum height of a letter pile is five letters.\n\nEnd of game:\n\nThe game ends when one of the following happens:\n1. One of the players is out of letters and there are no letters in the middle of the board.\n2. No player can form a word with their letters.\n3. All players have given their turn to the next one.\n\nWord construction:\n\n"
+		/>
+		<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/instructions_text"
+        android:id="@+id/rl1"
+        android:layout_marginBottom="10dip"
+        >
+		<ImageView
+		 android:id="@+id/example_1_image"
+		 android:layout_width="wrap_content"
+		 android:layout_height="wrap_content"
+		 android:src="@drawable/example_1"
+		 android:layout_marginRight="9dip"
+		 
+		/>
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="With the word &quot;TOPA&quot; already on the board ,you form the word &quot;AYTA&quot; using &quot;A&quot;.You gain 8 points (because the whole word is found on the bottom level)."
+			android:layout_toRightOf="@id/example_1_image"
+	    />
+	    </RelativeLayout>
+	    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rl1"
+        android:id="@+id/rl2"
+        android:layout_marginBottom="10dip"
+        >
+		<ImageView
+		 android:id="@+id/example_2_image"
+		 android:layout_width="wrap_content"
+		 android:layout_height="wrap_content"
+		 android:src="@drawable/example_2"
+		 android:layout_marginRight="9dip"
+		 
+		/>
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="The next player adds the letters &quot;E&quot; ,&quot;X&quot; and &quot;H&quot; to form the words &quot;EYXH&quot; and &quot;PE&quot;.That gives them 14 points (4 for &quot;PE&quot; and 10 for &quot;EYXH&quot;)."
+			android:layout_toRightOf="@id/example_2_image"
+	    />
+	    </RelativeLayout>
+	    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rl2"
+        android:id="@+id/rl3"
+        android:layout_marginBottom="10dip"
+        >
+		<ImageView
+		 android:id="@+id/example_3_image"
+		 android:layout_width="wrap_content"
+		 android:layout_height="wrap_content"
+		 android:src="@drawable/example_3"
+		 android:layout_marginRight="9dip"
+		 
+		/>
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Now the letter &quot;M&quot; is placed above the letter &quot;T&quot; to change the word and turn it into &quot;MOPA&quot;.That gives 5 points ,one for each letter and one for the letter wich is in the pile under &quot;M&quot;."
+			android:layout_toRightOf="@id/example_3_image"
+	    />
+	    </RelativeLayout>
+	    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rl3"
+        android:id="@+id/rl4"
+        android:layout_marginBottom="10dip"
+        >
+		<ImageView
+		 android:id="@+id/example_4_image"
+		 android:layout_width="wrap_content"
+		 android:layout_height="wrap_content"
+		 android:src="@drawable/example_4"
+		 android:layout_marginRight="9dip"
+		 
+		/>
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="You now place on top the letters &quot;O&quot; and &quot;E&quot; to turn the word &quot;AYTA&quot; into &quot;OYTE&quot; and the word &quot;MOPA&quot; into &quot;MOPO&quot;.That gives you 12 points (6 for &quot;MOPO&quot; and 6 for &quot;OYTE&quot;)."
+			android:layout_toRightOf="@id/example_4_image"
+	    />
+	    </RelativeLayout>
+	    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rl4"
+        android:id="@+id/rl5"
+        android:layout_marginBottom="10dip"
+        >
+		<ImageView
+		 android:id="@+id/example_5_image"
+		 android:layout_width="wrap_content"
+		 android:layout_height="wrap_content"
+		 android:src="@drawable/example_5"
+		 android:layout_marginRight="9dip"
+		 
+		/>
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="The next player forms the word &quot;MIKPO&quot; by changing the letter &quot;E&quot; to form the word &quot;OYTI&quot; at the same time.That gives them 14 points (7 for &quot;MIKPO&quot; and 7 for &quot;OYTI&quot;)."
+			android:layout_toRightOf="@id/example_5_image"
+	    />
+	    </RelativeLayout>
+	    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rl5"
+        android:id="@+id/rl6"
+        android:layout_marginBottom="10dip"
+        >
+		<ImageView
+		 android:id="@+id/example_6_image"
+		 android:layout_width="wrap_content"
+		 android:layout_height="wrap_content"
+		 android:src="@drawable/example_6"
+		 android:layout_marginRight="9dip"
+		 
+		/>
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Now the word &quot;EYXH&quot; goes into genitive case to become &quot;EYXHS&quot; while the word &quot;OPOS&quot; is added.That gives 18 points (8 for &quot;OPOS&quot; and 10 for &quot;EYXHS&quot;).The height of both words is one letter."
+			android:layout_toRightOf="@id/example_6_image"
+	    />
+	    </RelativeLayout>
+	</RelativeLayout>
+	</ScrollView>
+</RelativeLayout>

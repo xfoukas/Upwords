@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
 import edu.aueb.cs.uw.core.GameConfigs;
 import android.media.SoundPool.OnLoadCompleteListener;
 
@@ -73,6 +74,19 @@ public class Upwords extends Activity {
         	
         });
         
+        Button instructions = (Button)findViewById(R.id.instructions);
+        instructions.setOnClickListener
+        (
+        		new OnClickListener() 
+        		{        	
+        			public void onClick(View v)
+        			{
+        				Intent instructionsIntent = new Intent(Upwords.this,InstructionsActivity.class);
+        				startActivity(instructionsIntent);
+        			}        	
+        		}
+        );
+        
         Button ExitButton = (Button)findViewById(R.id.exit);
         ExitButton.setOnClickListener(new OnClickListener() {
         	
@@ -96,6 +110,43 @@ public class Upwords extends Activity {
         		alert.show();        		
         	}        	
         }); 
+        
+        final CheckBox cb=(CheckBox) findViewById(R.id.sound);
+        cb.setChecked(true);
+        
+        cb.setOnClickListener
+        (
+        		new OnClickListener() 
+        		{        	
+        			public void onClick(View v) 
+        			{
+        				if(!cb.isChecked())
+        				{        		
+        					SoundManager.stopSound(1);
+        					
+        					SoundManager.soundOff();
+        				}
+        				else
+        				{        			
+        					SoundManager.cleanup();
+        					SoundManager.getInstance();
+        					SoundManager.initSounds(Upwords.this);
+        			        SoundManager.loadSounds();    
+        			        (SoundManager.sp).setOnLoadCompleteListener
+        			        (
+        			        		new OnLoadCompleteListener()
+        			        		{
+        			        			@Override
+        			        			public void onLoadComplete(SoundPool sp,int s,int status)
+        			        			{        			        				
+        			        				SoundManager.playSound(1,1,-1);
+        			        			}
+        			        		}
+        			        );			
+        				}
+        			}        	
+        		}
+        );
     }
     
     @Override

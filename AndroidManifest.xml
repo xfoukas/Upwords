@@ -14,6 +14,7 @@
 		<activity android:name=".BoardActivity" android:screenOrientation="portrait"
 		android:configChanges="orientation|keyboardHidden|keyboard"></activity>
 		<activity android:name=".AboutActivity"></activity>
+		<activity android:name=".InstructionsActivity"></activity>
     </application>
 
 

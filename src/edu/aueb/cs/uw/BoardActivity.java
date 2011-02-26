@@ -240,14 +240,14 @@ public class BoardActivity extends Activity
     	{    	    	
     	    case R.id.scoreb:
     	    	
-    	    	String text="";
+    	    	String text="Time played:\n"+this.ge.getTimePlayed()+"\n\nScore:\n";
     	    	
     	    	for(int i=0;i<ge.getNumPlayers();i++)
     	    	{
     	    		text=text+ge.getPlayer(i).getNickname()+"    "+ge.getPlayer(i).getScore()+"\n";
     	    	}
     	    	
-    	    	showDialog(text,"Score");
+    	    	showDialog(text,"Game info");
     	    	
     	    	break;
     	    	

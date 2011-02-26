@@ -14,10 +14,21 @@ public class SoundManager
 	private static HashMap<Integer,Integer> sm;
 	private static AudioManager am;
 	private static Context c;
+	private static boolean mute;
 
 	private SoundManager()
 	{
-		
+		mute=false;
+	}
+	/*
+	public static void soundOn()
+	{
+		mute=false;
+	}*/
+	
+	public static void soundOff()
+	{		
+		mute=true;
 	}
 	
 	static synchronized public SoundManager getInstance()
@@ -45,21 +56,27 @@ public class SoundManager
 	
 	public static void loadSounds()
 	{
-		sm.put(1,sp.load(c,R.raw.upwords,1));
+		sm.put(1,sp.load(c,R.raw.wwwsoundbytercomelectroniccminorarpeggio,1));
 		sm.put(2,sp.load(c,R.raw.clickon, 1));
 		sm.put(3,sp.load(c,R.raw.clickoff, 1));
 	}
 	
 	public static void playSound(int i,float s,int loop)
 	{
+		if(!mute)
+		{
 			float sv=am.getStreamVolume(AudioManager.STREAM_MUSIC);
 	    	sv=sv/am.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
 	    	sp.play((int)((Integer)(sm.get(i))),sv,sv,1,loop,s);
+		}			
 	}
 	
 	public static void stopSound(int i)
 	{
-		sp.stop(sm.get(i));
+		if(!mute)
+		{
+			sp.stop(sm.get(i));
+		}		
 	}
 	
 	public static void cleanup()

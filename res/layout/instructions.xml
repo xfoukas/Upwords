@@ -1,22 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="@drawable/scrabble_tiles"
+    android:orientation="vertical"
 >
 	<ScrollView
-	android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+	android:id="@+id/scroll1"
+	android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:fillViewport="true"
+    android:layout_marginBottom="50dip"
+    android:background="#99000000"
 	>
-	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	<RelativeLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
-		<TextView
+    		<TextView
 			android:id="@+id/instructions_text"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="How to play:\n\nEach player is given seven random letters at the beginning of the game.The first one who plays has to form a word horizontally or vertically and at least one of the letters of the word has to be in one of the four middle squares.Whenever it is your turn to play ,you have to form a word by connecting a new word with a letter of a previous one or by pilling one or more letters on top of an existing word to change it.You cannot place a letter on top of another letter of the same kind.After that ,the next player's turn comes.\n\nWord rules:\n\n1. If a word is in the dictionary ,then it can be used.Names ,abbreviations and initials are not allowed.\n2. All words must be in horizontal or vertical alignment ,diagonal alignment is not allowed.\n3. If you connect the letters of a new word with letters that contribute to more than one words or if you change letters that contribute to more than one words ,all new words must be acceptable according to the word rules.\n4. The maximum height of a letter pile is five letters.\n\nEnd of game:\n\nThe game ends when one of the following happens:\n1. One of the players is out of letters and there are no letters in the middle of the board.\n2. No player can form a word with their letters.\n3. All players have given their turn to the next one.\n\nWord construction:\n\n"
 		/>
-		<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		<RelativeLayout 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/instructions_text"
@@ -34,11 +40,11 @@
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="With the word &quot;TOPA&quot; already on the board ,you form the word &quot;AYTA&quot; using &quot;A&quot;.You gain 8 points (because the whole word is found on the bottom level)."
+			android:text="With the word &quot;TΩPA&quot; already on the board ,you form the word &quot;AYTA&quot; using &quot;A&quot;.You gain 8 points (because the whole word is found on the bottom level)."
 			android:layout_toRightOf="@id/example_1_image"
 	    />
 	    </RelativeLayout>
-	    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    <RelativeLayout 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/rl1"
@@ -60,7 +66,7 @@
 			android:layout_toRightOf="@id/example_2_image"
 	    />
 	    </RelativeLayout>
-	    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    <RelativeLayout 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/rl2"
@@ -82,7 +88,7 @@
 			android:layout_toRightOf="@id/example_3_image"
 	    />
 	    </RelativeLayout>
-	    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    <RelativeLayout 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/rl3"
@@ -104,7 +110,7 @@
 			android:layout_toRightOf="@id/example_4_image"
 	    />
 	    </RelativeLayout>
-	    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    <RelativeLayout 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/rl4"
@@ -126,7 +132,7 @@
 			android:layout_toRightOf="@id/example_5_image"
 	    />
 	    </RelativeLayout>
-	    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    <RelativeLayout 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/rl5"
@@ -144,10 +150,24 @@
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="Now the word &quot;EYXH&quot; goes into genitive case to become &quot;EYXHS&quot; while the word &quot;OPOS&quot; is added.That gives 18 points (8 for &quot;OPOS&quot; and 10 for &quot;EYXHS&quot;).The height of both words is one letter."
+			android:text="Now the word &quot;EYXH&quot; goes into genitive case to become &quot;EYXHS&quot; while the word &quot;OPOΣ&quot; is added.That gives 18 points (8 for &quot;OPOS&quot; and 10 for &quot;EYXHS&quot;).The height of both words is one letter."
 			android:layout_toRightOf="@id/example_6_image"
 	    />
 	    </RelativeLayout>
 	</RelativeLayout>
+	
 	</ScrollView>
-</RelativeLayout>
+	<LinearLayout
+		 android:layout_marginTop="-50dip"
+		 android:gravity="bottom"
+		 android:layout_height="wrap_content"
+		 android:layout_width="fill_parent">
+	
+<Button android:layout_width="fill_parent"
+	 android:layout_height="wrap_content" 
+	 android:text="@string/back" 
+	 android:id="@+id/back_instructions"
+	 android:layout_gravity="center_horizontal"
+	 />
+</LinearLayout>
+</LinearLayout>

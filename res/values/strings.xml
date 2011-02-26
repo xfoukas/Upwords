@@ -19,4 +19,5 @@
         <item>Black</item>
         <item>Yellow</item>
 </string-array>
+<string name="back">Back</string>
 </resources>

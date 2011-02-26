@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#ff000000"
+    android:background="@drawable/scrabble_tiles"
+    android:orientation="vertical"
     >
     
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+ <ImageView   
+ 	android:layout_width="wrap_content"
+ 	android:layout_margin="10px"
+ 	android:layout_height="wrap_content"
+ 	android:src="@drawable/upwords"/>
+ 
+ 
+<LinearLayout 
     android:orientation="vertical"
-    android:layout_width="wrap_content"
+    android:layout_width="fill_parent"
+    android:layout_margin="10px"
     android:layout_height="wrap_content"
     android:gravity="center"
+    android:background="#99000000"
     >
 
 
-    
-<View
-        android:background="@drawable/upwordsabout"
-        android:layout_width="200px"
-        android:id="@+id/aboutview1"
-        android:layout_height="150px"
-        android:layout_marginBottom="90dip"
-        android:layout_weight="1"/>    
-    
     
 <TextView
         android:text="Anastasios Litsas-Alexis"
@@ -36,7 +36,7 @@
         />
           
 <TextView
-        android:text="die_hard_14.75_beta_2_service_pack_38@hotmail.com"
+        android:text="p3070093@dias.aueb.gr"
         android:textSize="6pt"
         android:id="@+id/textview2"
         android:textColor="#000000"
@@ -58,7 +58,7 @@
         android:layout_weight="1"/>
         
 <TextView
-        android:text="asounsao@hotmail.com"
+        android:text="p3070185@dias.aueb.gr"
         android:textColor="#000000"
         android:id="@+id/textview4"
         android:textSize="6pt"
@@ -68,8 +68,24 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"/>
 
-
-
 </LinearLayout>
 
-</AbsoluteLayout>
+<TextView
+android:id="@+id/widget35"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"/>
+
+<TextView
+android:id="@+id/widget35"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"/>
+
+<Button
+android:id="@+id/back_about"
+android:layout_width="200px"
+android:layout_height="wrap_content"
+android:text="@string/back"
+android:layout_gravity="center_horizontal"
+/>
+
+</LinearLayout>

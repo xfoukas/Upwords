@@ -22,6 +22,7 @@ public class GameEngine {
 		for(int i=0;i<players.length;i++){
 			players[i].setPlayerID(i);
 			players[i].setPool(getTp());
+			players[i].getTray().fillTray();
 		}
 		dateFormat=new SimpleDateFormat("HH:mm:ss");
 		setBoard(new Board());
@@ -30,9 +31,7 @@ public class GameEngine {
 	
 	public void beginGame(int firstPlayer){
 		startTime = System.currentTimeMillis();
-		playerTurn=firstPlayer;
-		for(int i=0;i<players.length;i++)
-			players[i].getTray().fillTray();
+		playerTurn=firstPlayer;			
 	}
 	
 	public int getNumPlayers()

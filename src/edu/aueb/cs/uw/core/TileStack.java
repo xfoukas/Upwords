@@ -77,5 +77,9 @@ public class TileStack {
 		return tileStack.size();
 	}
 	
+	public int getNumTilesInStack(){
+		return tileStack.size();
+	}
+	
 	
 }

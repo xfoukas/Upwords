@@ -7,13 +7,11 @@ public class Tray {
 	private Tile [] tray;
 	private TilePool pool;
 	private int playerID;
-	private int numOfTiles;
 	private int numUnusedTiles;
 	
 	public Tray(int playerID,TilePool pool){
 		tray=new Tile[TRAY_SIZE];
 		this.setPlayerID(playerID);
-		this.setNumOfTiles(0);
 		this.setNumUnusedTiles(0);
 		this.setPool(pool);
 	}
@@ -23,7 +21,6 @@ public class Tray {
 		for(int i=0;i<t.getNumUnusedTiles();i++)
 			tray[i]=new Tile(t.getTile(i));
 		this.setPlayerID(t.getPlayerID());
-		this.setNumOfTiles(t.getNumOfTiles());
 		this.setNumUnusedTiles(t.getNumUnusedTiles());
 		this.setPool(new TilePool(t.getPool()));
 	}
@@ -40,7 +37,6 @@ public class Tray {
 				addedTiles++;
 			} else break;
 		}
-		setNumOfTiles(getNumUnusedTiles() + addedTiles);
 		setNumUnusedTiles(getNumUnusedTiles() + addedTiles);
 		return addedTiles;
 	}
@@ -49,11 +45,11 @@ public class Tray {
 		if((tray[i]==null)||(i>=TRAY_SIZE)
 				||(i<0))
 			return null;
-		setNumUnusedTiles(getNumUnusedTiles() - 1);
 		Tile t=tray[i];
-		for(int j=i;j<numOfTiles-1;j++)
+		for(int j=i;j<getNumUnusedTiles()-1;j++)
 			tray[j]=tray[j+1];
-		tray[numOfTiles-1]=null;
+		tray[getNumUnusedTiles()-1]=null;
+		setNumUnusedTiles(getNumUnusedTiles() - 1);
 		return t;
 	}
 	
@@ -65,9 +61,6 @@ public class Tray {
 		return -1;
 	}
 
-	public int getNeededTiles(){
-		return TRAY_SIZE-numOfTiles;
-	}
 	
 	public void setPlayerID(int playerID) {
 		this.playerID = playerID;
@@ -77,13 +70,6 @@ public class Tray {
 		return playerID;
 	}
 
-	public void setNumOfTiles(int numOfTiles) {
-		this.numOfTiles = numOfTiles;
-	}
-
-	public int getNumOfTiles() {
-		return numOfTiles;
-	}
 
 	public void setPool(TilePool pool) {
 		this.pool = pool;

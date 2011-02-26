@@ -29,6 +29,8 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
 	private static int BOARD_SIZE=10;
 	private static final float MIN_FONT_DIPS = 14.0f;
 	
+	private static final int [] STACK_COLOR={0xFFFFFFFF,0xFF2BC2AE,0xFF2BC241,0xFF9FA617,0xFFC76B50};
+	
 	private Dimensions dimensions;
 	
 	private ImageButton endTurn;
@@ -337,9 +339,11 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
 				t=iter.next();
 				canvas.drawText(Integer.toString(i), x+dims.getCellSize()/4 , y+i*dims.getCellSize()+5*dims.getCellSize()/6,
 						stackTextPaint);
+				tileFillPaint.setColor(BoardView.STACK_COLOR[i-1]);
 				drawTile(canvas, x+3*dims.getCellSize()/4, y+((size+1)-i)*dims.getCellSize(),
 						x+3*dims.getCellSize()/4+dims.getCellSize(), y+((size+1)-i)*dims.getCellSize()+dims.getCellSize(),
 						Character.toString(t.getLetter()));
+				tileFillPaint.setColor(Color.WHITE);
 				i++;
 			}
 			stackTextPaint.setTextAlign(Align.CENTER);
@@ -429,6 +433,8 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
 							tileFillPaint.setColor(Color.YELLOW);
 						else if(b.getTile(i, j).getAge()==b.getTurn())
 							tileFillPaint.setARGB(255, 160, 160, 200);
+						else 
+							tileFillPaint.setColor(BoardView.STACK_COLOR[ts[i][j].getNumTilesInStack()-1]);
 						left=dims.getPadding()+j*dims.getCellSize();
 						right=left+dims.getCellSize();
 						top=dims.getScoreHeight()+i*dims.getCellSize();
@@ -450,8 +456,9 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
 				tileSize=4*dims.getTrayHeight()/5;
 			int bot_border=(dims.getTrayHeight()-tileSize)/2;
 			int space=(dims.getTotalWidth()-(tileSize*Tray.TRAY_SIZE))/(Tray.TRAY_SIZE+1);
-			tilesTray=new Rect[t.getNumUnusedTiles()]; 
-			for(int i=0;i<t.getNumUnusedTiles();i++){
+			int reps=t.getNumUnusedTiles();
+			tilesTray=new Rect[reps]; 
+			for(int i=0;i<reps;i++){
 				if(t.getTile(i)==null) continue;
 				if(selectedTileNum==i)
 					tileFillPaint.setColor(Color.YELLOW);
